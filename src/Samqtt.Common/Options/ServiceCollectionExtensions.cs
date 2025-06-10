@@ -16,9 +16,9 @@ namespace Samqtt.Options
             services
                 .PostConfigure<SamqttOptions>(o =>
                 {
-                    o.Sensors = new Dictionary<string, SensorOptions>(o.Sensors, StringComparer.OrdinalIgnoreCase);
-                    o.MultiSensors = new Dictionary<string, MultiSensorOptions>(o.MultiSensors, StringComparer.OrdinalIgnoreCase);
-                    o.Listeners = new Dictionary<string, ListenerOptions>(o.Listeners, StringComparer.OrdinalIgnoreCase);
+                    o.Sensors = new Dictionary<string, SystemSensorOptions>(o.Sensors, StringComparer.OrdinalIgnoreCase);
+                    o.MultiSensors = new Dictionary<string, SystemMultiSensorOptions>(o.MultiSensors, StringComparer.OrdinalIgnoreCase);
+                    o.Actions = new Dictionary<string, SystemActionOptions>(o.Actions, StringComparer.OrdinalIgnoreCase);
                 });
 
             return services;

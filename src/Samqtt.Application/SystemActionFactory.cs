@@ -21,7 +21,7 @@ namespace Samqtt.Application
             var allActions = serviceProvider.GetServices<ISystemAction>();
             var result = new Dictionary<string, ISystemAction>(StringComparer.OrdinalIgnoreCase);
 
-            foreach (var (actionKey, actionOptions) in _options.Listeners)
+            foreach (var (actionKey, actionOptions) in _options.Actions)
             {
                 if (!actionOptions.Enabled)
                 {
