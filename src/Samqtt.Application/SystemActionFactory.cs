@@ -9,9 +9,10 @@ using Samqtt.SystemActions;
 namespace Samqtt.Application
 {
     public class SystemActionFactory(
-    IOptions<SamqttOptions> options,
-    IServiceProvider serviceProvider,
-    ILogger<SystemActionFactory> logger) : ISystemActionFactory
+        IOptions<SamqttOptions> options,
+        IServiceProvider serviceProvider,
+        ITopicProvider topicProvider,
+        ILogger<SystemActionFactory> logger) : ISystemActionFactory
     {
         private readonly SamqttOptions _options = options.Value;
         private static readonly Dictionary<string, (Type HandlerType, PropertyInfo? ReturnProperty)> _handlers = [];
@@ -41,15 +42,15 @@ namespace Samqtt.Application
                     ? SanitizeHelpers.Sanitize(actionKey)
                     : SanitizeHelpers.Sanitize(actionOptions.Topic);
 
-                var uniqueId = $"{_options.DeviceUniqueId}_{SanitizeHelpers.Sanitize(actionKey)}";
+                var uniqueId = topicProvider.GetUniqueId(actionKey);
 
                 matching.Metadata = new SystemActionMetadata
                 {
                     Key = actionKey,
                     Name = matching.GetType().Name.Replace("Action", ""),
                     UniqueId = uniqueId,
-                    StateTopic = $"{_options.MqttBaseTopic}/{topic}",
-                    CommandTopic = $"{_options.MqttBaseTopic}/{topic}"
+                    StateTopic = topicProvider.GetStateTopic(topic),
+                    CommandTopic = topicProvider.GetStateTopic(topic)
                 };
 
                 result[actionKey] = matching;

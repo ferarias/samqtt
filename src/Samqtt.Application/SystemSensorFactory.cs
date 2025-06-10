@@ -11,6 +11,7 @@ namespace Samqtt.Application
     public class SystemSensorFactory(
         IOptions<SamqttOptions> options,
         IServiceProvider serviceProvider,
+        ITopicProvider topicProvider,
         ILogger<SystemSensorFactory> logger) : ISystemSensorFactory
     {
         private readonly SamqttOptions _options = options.Value;
@@ -147,8 +148,8 @@ namespace Samqtt.Application
             {
                 Key = sensorName,
                 Name = sensorType.Name.Replace("Sensor", string.Empty),
-                UniqueId = $"{_options.DeviceUniqueId}_{SanitizeHelpers.Sanitize(sensorName)}",
-                StateTopic = $"{_options.MqttBaseTopic}/{topic}",
+                UniqueId = topicProvider.GetUniqueId(sensorName),
+                StateTopic = topicProvider.GetStateTopic(topic),
                 IsBinary = ReturnsBinaryValue(sensorType),
                 InstanceId = instanceId
             };
