@@ -7,12 +7,10 @@ namespace Samqtt.Broker.MQTTNet
 {
     public class MqttConnector(
         IMqttClient client,
-        IMqttPublisher publisher,
         IOptions<SamqttOptions> options,
         ILogger<MqttConnector> logger) : IMqttConnectionManager, IAsyncDisposable
     {
         private readonly IMqttClient _client = client;
-        private readonly IMqttPublisher publisher = publisher;
 
         private readonly SamqttOptions _options = options.Value;
         private readonly ILogger _logger = logger;
