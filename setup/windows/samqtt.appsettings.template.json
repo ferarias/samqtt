@@ -1,0 +1,84 @@
+{
+    "Samqtt": {
+        "Broker": {
+            "Server": "{{MQTT_SERVER}}",
+            "Port": {{MQTT_PORT}},
+            "Username": "{{MQTT_USERNAME}}",
+            "Password": "{{MQTT_PASSWORD}}"
+        },
+        "DeviceIdentifier": "{{DEVICE_IDENTIFIER}}",
+        "MqttTopicQoS": 1,
+        "TimerInterval": 5,
+        "Sensors": {
+            "Timestamp": {
+                "enabled": true
+            },
+            "CpuProcessorTime": {
+                "enabled": true
+            },
+            "FreeMemory": {
+                "enabled": true
+            },
+            "NetworkAvailability": {
+                "enabled": true
+            },
+            "ComputerInUse": {
+                "enabled": false
+            }
+        },
+        "MultiSensors": {
+            "Drive": {
+                "enabled": true,
+                "Sensors": {
+                    "DriveFreeSize": {
+                        "enabled": true
+                    },
+                    "DrivePercentFreeSize": {
+                        "enabled": true
+                    },
+                    "DriveTotalSize": {
+                        "enabled": true
+                    }
+                }
+            }
+        },
+        "Listeners": {
+            "Hibernate": {
+                "Topic": "hibernate",
+                "Enabled": true
+            },
+            "Reboot": {
+                "Topic": "reboot",
+                "Enabled": true
+            },
+            "Shutdown": {
+                "Topic": "shutdown",
+                "Enabled": true
+            },
+            "Suspend": {
+                "Topic": "suspend",
+                "Enabled": true
+            },
+            "SendNotification": {
+                "Topic": "sendnotification",
+                "Enabled": false
+            },
+            "StartProcess": {
+                "Topic": "startprocess",
+                "Enabled": true
+            },
+            "KillProcess": {
+                "Topic": "killprocess",
+                "Enabled": true
+            },
+            "GetProcesses": {
+                "Topic": "getprocesses",
+                "Enabled": true
+            },
+            "GetProcess": {
+                "Topic": "getprocess",
+                "Enabled": true
+            }
+        }
+    }
+}

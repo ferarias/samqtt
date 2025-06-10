@@ -1,0 +1,11 @@
+{
+  "solution": {
+    "path": "SAMQTT.sln",
+    "projects": [
+      "src/Samqtt/Samqtt.csproj",
+      "src/Samqtt.SystemActions/Samqtt.SystemActions.csproj",
+      "src/Samqtt.SystemSensors/Samqtt.SystemSensors.csproj",
+      "src/Samqtt.*/*.csproj"
+    ]
+  }
+}

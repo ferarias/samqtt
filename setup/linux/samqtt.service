@@ -1,0 +1,20 @@
+[Unit]
+Description=SAMQTT Service
+After=network.target
+
+[Service]
+Type=simple
+WorkingDirectory=/opt/samqtt
+ExecStart=/usr/bin/dotnet /opt/samqtt/samqtt.dll
+Restart=on-failure
+RestartSec=5
+User=samqtt
+Environment=ASPNETCORE_ENVIRONMENT=Production
+EnvironmentFile=/etc/samqtt/env
+
+# Redirect logs to journald
+StandardOutput=journal
+StandardError=journal
+
+[Install]
+WantedBy=multi-user.target

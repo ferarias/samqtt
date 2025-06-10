@@ -1,0 +1,13 @@
+<Project>
+  <PropertyGroup Condition="'$(Configuration)' == 'Release-Windows'">
+    <RuntimeIdentifier>win-x64</RuntimeIdentifier>
+    <TargetFramework>net8.0-windows8.0</TargetFramework>
+    <DefineConstants>$(DefineConstants);WINDOWS</DefineConstants>
+    <SelfContained>true</SelfContained>
+    <PublishSingleFile>true</PublishSingleFile>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)' == 'Release-Cross'">
+    <TargetFramework>net8.0</TargetFramework>
+  </PropertyGroup>
+</Project>

@@ -1,0 +1,84 @@
+# LECHUCK Sensors
+mqtt:
+  sensor:
+    - name: 'LECHUCK C:\ free space'
+      state_topic: "samqtt/lechuck/drive/C/sizefree"
+      state_class: measurement
+      device_class: data_size
+      unit_of_measurement: "MB"
+      value_template: "{{ (value | float / 1048576) | round(2) }}"
+      icon: mdi:chart-pie
+    - name: 'LECHUCK C:\ free space percentage'
+      state_topic: "samqtt/lechuck/drive/C/percentfree"
+      state_class: measurement
+      unit_of_measurement: "%"
+      icon: mdi:chart-pie
+    - name: 'LECHUCK D:\ free space'
+      state_topic: "samqtt/lechuck/drive/D/sizefree"
+      state_class: measurement
+      device_class: data_size
+      unit_of_measurement: "MB"
+      value_template: "{{ (value | float / 1048576) | round(2) }}"
+      icon: mdi:chart-pie
+    - name: 'LECHUCK D:\ free space percentage'
+      state_topic: "samqtt/lechuck/drive/D/percentfree"
+      state_class: measurement
+      unit_of_measurement: "%"
+      icon: mdi:chart-pie
+    - name: 'LECHUCK E:\ free space'
+      state_topic: "samqtt/lechuck/drive/E/sizefree"
+      state_class: measurement
+      device_class: data_size
+      unit_of_measurement: "MB"
+      value_template: "{{ (value | float / 1048576) | round(2) }}"
+      icon: mdi:chart-pie
+    - name: 'LECHUCK E:\ free space percentage'
+      state_topic: "samqtt/lechuck/drive/E/percentfree"
+      state_class: measurement
+      unit_of_measurement: "%"
+      icon: mdi:chart-pie
+    - name: "LECHUCK free memory"
+      state_topic: "samqtt/lechuck/freememory"
+      state_class: measurement
+      icon: mdi:memory
+    - name: "LECHUCK CPU load"
+      state_topic: "samqtt/lechuck/cpuprocessortime"
+      state_class: measurement
+      unit_of_measurement: "%"
+      icon: mdi:chip
+  binary_sensor:
+    - name: "LECHUCK network is available"
+      unique_id: lechuck_network_available
+      state_topic: "samqtt/lechuck/binary_sensor/network_available"
+      payload_on: "1"
+      payload_off: "0"
+      icon: mdi:network
+    - name: "LECHUCK is in use"
+      unique_id: lechuck_in_use
+      state_topic: "samqtt/lechuck/binary_sensor/inuse"
+      payload_on: "1"
+      payload_off: "0"
+      icon: mdi:checkbox-marked-circle-outline
+
+switch:
+# Power Management
+  - platform: mqtt
+    name: "Hibernate LECHUCK"
+    command_topic: "samqtt/lechuck/hibernate"
+    payload_on: "1"
+    optimistic: false
+  - platform: mqtt
+    name: "Suspend LECHUCK"
+    command_topic: "samqtt/lechuck/suspend"
+    payload_on: "1"
+    optimistic: false
+  - platform: mqtt
+    name: "Reboot LECHUCK"
+    command_topic: "samqtt/lechuck/reboot"
+    payload_on: "1"
+    optimistic: false
+  - platform: mqtt
+    name: "Shutdown LECHUCK"
+    command_topic: "samqtt/lechuck/shutdown"
+    payload_on: "1"
+    optimistic: false
