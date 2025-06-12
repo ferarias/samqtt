@@ -23,7 +23,7 @@ namespace Samqtt.Application
             {
                 if (!actionOptions.Enabled)
                 {
-                    logger.LogInformation("Action {Action} is disabled in configuration", actionName);
+                    logger.LogDebug("Action {Action} is disabled in configuration", actionName);
                     continue;
                 }
 

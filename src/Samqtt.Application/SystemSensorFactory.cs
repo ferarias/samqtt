@@ -4,7 +4,6 @@ using Microsoft.Extensions.Options;
 using Samqtt.Common;
 using Samqtt.Options;
 using Samqtt.SystemSensors;
-using System.Reflection;
 
 namespace Samqtt.Application
 {
@@ -26,7 +25,7 @@ namespace Samqtt.Application
             {
                 if (!sensorOptions.Enabled)
                 {
-                    logger.LogInformation("Sensor {Sensor} is disabled in configuration.", sensorName);
+                    logger.LogDebug("Sensor {Sensor} is disabled in configuration.", sensorName);
                     continue;
                 }
 
@@ -47,7 +46,7 @@ namespace Samqtt.Application
             {
                 if (!multisensorOptions.Enabled)
                 {
-                    logger.LogInformation("MultiSensor {MultiSensor} is disabled in config.", multisensorName);
+                    logger.LogDebug("MultiSensor {MultiSensor} is disabled in config.", multisensorName);
                     continue;
                 }
 
@@ -65,7 +64,7 @@ namespace Samqtt.Application
                 {
                     if (!childSensorOptions.Enabled)
                     {
-                        logger.LogInformation("Multi-sensor child sensor {Sensor} is disabled in config.", childSensorName);
+                        logger.LogDebug("Multi-sensor child sensor {Sensor} is disabled in config.", childSensorName);
                         continue;
                     }
 
@@ -112,7 +111,6 @@ namespace Samqtt.Application
                 Name = sensorType.Name.Replace("Sensor", string.Empty),
                 UniqueId = topicProvider.GetUniqueId(sensorName),
                 StateTopic = topicProvider.GetStateTopic(topic),
-                IsBinary = ReturnsBinaryValue(sensorType),
                 InstanceId = instanceId
             };
             if (Attribute.GetCustomAttribute(sensorType, typeof(HomeAssistantSensorAttribute)) is HomeAssistantSensorAttribute haAttr)
@@ -133,13 +131,5 @@ namespace Samqtt.Application
         private static string SanitizeTopicOrDefault(string fallback, string? topic) => 
             SanitizeHelpers.Sanitize(string.IsNullOrWhiteSpace(topic) ? fallback : topic);
 
-
-        private static bool ReturnsBinaryValue(Type t)
-        {
-            var method = t.GetMethod("CollectInternalAsync", BindingFlags.NonPublic | BindingFlags.Instance);
-            return method?.ReturnType.IsGenericType == true
-                && method.ReturnType.GetGenericTypeDefinition() == typeof(Task<>)
-                && method.ReturnType.GetGenericArguments()[0] == typeof(bool);
-        }
     }
 }
