@@ -1,5 +1,4 @@
-﻿using System;
-
+﻿
 namespace Samqtt.SystemSensors
 {
     public class SystemSensorMetadata
@@ -21,5 +20,8 @@ namespace Samqtt.SystemSensors
         public string? DeviceClass { get; set; }
 
         public string? StateClass { get; set; }
+
+        public string? PayloadOn { get; set; } = "on";
+        public string? PayloadOff { get; set; } = "off";
     }
 }

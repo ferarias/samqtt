@@ -124,6 +124,12 @@ namespace Samqtt.Application
                 sm.DeviceClass = haAttr.DeviceClass;
                 sm.StateClass = haAttr.StateClass;
             }
+            if (Attribute.GetCustomAttribute(sensorType, typeof(HomeAssistantBinarySensorAttribute)) is HomeAssistantBinarySensorAttribute habAttr)
+            {
+                sm.IsBinary = true;
+                sm.PayloadOn = habAttr.PayloadOn;
+                sm.PayloadOff = habAttr.PayloadOff;
+            }
             return sm;
         }
 

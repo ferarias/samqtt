@@ -1,10 +1,8 @@
-﻿using System.Text.Json;
-using System.Text.Json.Serialization;
-using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Options;
-using Samqtt.Options;
+﻿using Microsoft.Extensions.Logging;
 using Samqtt.SystemActions;
 using Samqtt.SystemSensors;
+using System.Text.Json;
+using System.Text.Json.Serialization;
 
 namespace Samqtt.HomeAssistant
 {
@@ -87,9 +85,8 @@ namespace Samqtt.HomeAssistant
             string? discoveryTopic;
             if (metadata?.IsBinary == true)
             {
-                // Binary-specific fields
-                payloadDict["payload_on"] = "1";
-                payloadDict["payload_off"] = "0";
+                if (!string.IsNullOrWhiteSpace(metadata?.PayloadOn)) payloadDict["payload_on"] = metadata.PayloadOn;
+                if (!string.IsNullOrWhiteSpace(metadata?.PayloadOff)) payloadDict["payload_off"] = metadata.PayloadOff;
 
                 discoveryTopic = $"{HomeAssistantTopics.BaseTopic}/binary_sensor/{metadata.UniqueId}/config";
             }
