@@ -3,7 +3,7 @@ using System.Net.NetworkInformation;
 
 namespace Samqtt.SystemSensors.Sensors
 {
-    [HomeAssistantSensor(unitOfMeasurement: "availability", deviceClass: "connectivity")]
+    [HomeAssistantBinarySensor(deviceClass: "connectivity")]
     public class NetworkAvailabilitySensor(ILogger<NetworkAvailabilitySensor> logger) : SystemSensor<bool>
     {
         protected override Task<bool> CollectInternalAsync()
