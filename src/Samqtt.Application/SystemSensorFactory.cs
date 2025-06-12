@@ -20,7 +20,15 @@ namespace Samqtt.Application
             var allSensors = serviceProvider.GetServices<ISystemSensor>();
             var allMultiSensors = serviceProvider.GetServices<ISystemMultiSensor>();
 
-            // SENSORS
+            foreach (var sensor in GetEnabledSimpleSensors(allSensors))
+                yield return sensor;
+
+            foreach (var sensor in GetEnabledMultiSensors(allSensors, allMultiSensors))
+                yield return sensor;
+        }
+
+        private IEnumerable<ISystemSensor> GetEnabledSimpleSensors(IEnumerable<ISystemSensor> allSensors)
+        {
             foreach (var (sensorName, sensorOptions) in _options.Sensors)
             {
                 if (!sensorOptions.Enabled)
@@ -29,19 +37,28 @@ namespace Samqtt.Application
                     continue;
                 }
 
-                var sensorInstance = allSensors.FirstOrDefault(a => a.GetType().Name.Equals(sensorName + "Sensor", StringComparison.OrdinalIgnoreCase));
+                var sensorInstance = allSensors.FirstOrDefault(a =>
+                    a.GetType().Name.Equals(sensorName + "Sensor", StringComparison.OrdinalIgnoreCase));
                 if (sensorInstance == null)
                 {
                     logger.LogWarning("No sensorInstance ISystemSensor implementation found for key: {Sensor}", sensorName);
                     continue;
                 }
 
-                sensorInstance.Metadata = CreateMetadata(sensorInstance.GetType(), sensorName, SanitizeTopicOrDefault(sensorName, sensorOptions.Topic));
+                sensorInstance.Metadata = CreateMetadata(
+                    sensorInstance.GetType(),
+                    sensorName,
+                    SanitizeTopicOrDefault(sensorName, sensorOptions.Topic)
+                );
 
                 yield return sensorInstance;
             }
+        }
 
-            // MULTI-SENSORS
+        private IEnumerable<ISystemSensor> GetEnabledMultiSensors(
+                    IEnumerable<ISystemSensor> allSensors,
+                    IEnumerable<ISystemMultiSensor> allMultiSensors)
+        {
             foreach (var (multisensorName, multisensorOptions) in _options.MultiSensors)
             {
                 if (!multisensorOptions.Enabled)
@@ -53,52 +70,65 @@ namespace Samqtt.Application
                 var multisensorInstance = allMultiSensors
                     .FirstOrDefault(a => a.GetType().Name.Equals(multisensorName + "MultiSensor", StringComparison.OrdinalIgnoreCase));
 
-
                 if (multisensorInstance == null)
                 {
                     logger.LogWarning("No multisensorInstance IMultiSystemSensor implementation found for key: {MultiSensor}", multisensorName);
                     continue;
                 }
 
-                foreach (var (childSensorName, childSensorOptions) in multisensorOptions.Sensors)
+                foreach (var sensor in GetEnabledMultiSensorChildren(multisensorName, multisensorOptions, multisensorInstance, allSensors))
+                    yield return sensor;
+            }
+        }
+
+        private IEnumerable<ISystemSensor> GetEnabledMultiSensorChildren(
+            string multisensorName,
+            SystemMultiSensorOptions multisensorOptions,
+            ISystemMultiSensor multisensorInstance,
+            IEnumerable<ISystemSensor> allSensors)
+        {
+            foreach (var (childSensorName, childSensorOptions) in multisensorOptions.Sensors)
+            {
+                if (!childSensorOptions.Enabled)
                 {
-                    if (!childSensorOptions.Enabled)
+                    logger.LogDebug("Multi-sensor child sensor {Sensor} is disabled in config.", childSensorName);
+                    continue;
+                }
+
+                var childSensorInstance = allSensors
+                    .FirstOrDefault(a => a.GetType().Name.Equals(childSensorName + "Sensor", StringComparison.OrdinalIgnoreCase));
+
+                if (childSensorInstance == null)
+                {
+                    logger.LogWarning("No childSensorInstance ISystemSensor implementation found for key: {Sensor}", childSensorName);
+                    continue;
+                }
+
+                foreach (var childId in multisensorInstance.ChildIdentifiers)
+                {
+                    var sensorName = $"{childSensorName}Sensor_{childId}";
+                    var sensorInstance = serviceProvider.GetKeyedService<ISystemSensor>(sensorName);
+                    if (sensorInstance is null)
                     {
-                        logger.LogDebug("Multi-sensor child sensor {Sensor} is disabled in config.", childSensorName);
+                        logger.LogWarning(
+                            "DI could not resolve child sensor `{Sensor}` (child sensor of {Parent}). Check registrations.",
+                            childSensorName, multisensorName
+                        );
                         continue;
                     }
 
-                    var childSensorInstance = allSensors
-                        .FirstOrDefault(a => a.GetType().Name.Equals(childSensorName + "Sensor", StringComparison.OrdinalIgnoreCase));
+                    var childTopicName = string.Concat(
+                        SanitizeTopicOrDefault(multisensorName, multisensorOptions.Topic), '_',
+                        SanitizeTopicOrDefault(sensorName, childSensorOptions.Topic));
 
-                    if (childSensorInstance == null)
-                    {
-                        logger.LogWarning("No childSensorInstance ISystemSensor implementation found for key: {Sensor}", childSensorName);
-                        continue;
-                    }
+                    sensorInstance.Metadata = CreateMetadata(
+                        sensorInstance.GetType(),
+                        sensorName,
+                        childTopicName,
+                        childId
+                    );
 
-                    foreach (var childId in multisensorInstance.ChildIdentifiers)
-                    {
-                        var sensorName = $"{childSensorName}Sensor_{childId}";
-                        var sensorInstance = serviceProvider.GetKeyedService<ISystemSensor>(sensorName);
-                        if (sensorInstance is null)
-                        {
-                            logger.LogWarning(
-                                "DI could not resolve child sensor `{Sensor}` (child sensor of {Parent})",
-                                childSensorName, multisensorName
-                            );
-                            continue;
-                        }
-
-                        var childTopicName = string.Concat(
-                            SanitizeTopicOrDefault(multisensorName, multisensorOptions.Topic), '_',
-                            SanitizeTopicOrDefault(sensorName, childSensorOptions.Topic));
-
-                        sensorInstance.Metadata = CreateMetadata(sensorInstance.GetType(), sensorName, childTopicName, childId);
-
-                        yield return sensorInstance;
-                    }
-
+                    yield return sensorInstance;
                 }
             }
         }
@@ -128,7 +158,7 @@ namespace Samqtt.Application
             return sm;
         }
 
-        private static string SanitizeTopicOrDefault(string fallback, string? topic) => 
+        private static string SanitizeTopicOrDefault(string fallback, string? topic) =>
             SanitizeHelpers.Sanitize(string.IsNullOrWhiteSpace(topic) ? fallback : topic);
 
     }

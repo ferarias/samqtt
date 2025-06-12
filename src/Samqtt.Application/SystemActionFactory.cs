@@ -23,36 +23,37 @@ namespace Samqtt.Application
             {
                 if (!actionOptions.Enabled)
                 {
-                    logger.LogDebug("Action {Action} is disabled in configuration", actionName);
+                    logger.LogDebug("Action {Action} is disabled in configuration.", actionName);
                     continue;
                 }
 
-                var actionInstance = allActions
-                    .FirstOrDefault(a => a.GetType().Name.Equals(actionName + "Action", StringComparison.OrdinalIgnoreCase));
-
+                var actionInstance = allActions.FirstOrDefault(a => a.GetType().Name.Equals(actionName + "Action", StringComparison.OrdinalIgnoreCase));
                 if (actionInstance == null)
                 {
                     logger.LogWarning("No actionInstance ISystemAction implementation found for key: {Action}", actionName);
                     continue;
                 }
 
-                var topic = string.IsNullOrWhiteSpace(actionOptions.Topic)
-                    ? SanitizeHelpers.Sanitize(actionName)
-                    : SanitizeHelpers.Sanitize(actionOptions.Topic);
-
-                var uniqueId = topicProvider.GetUniqueId(actionName);
-
-                actionInstance.Metadata = new SystemActionMetadata
-                {
-                    Key = actionName,
-                    Name = actionInstance.GetType().Name.Replace("Action", ""),
-                    UniqueId = uniqueId,
-                    StateTopic = topicProvider.GetStateTopic(topic),
-                    CommandTopic = topicProvider.GetStateTopic(topic)
-                };
+                actionInstance.Metadata = CreateMetadata(actionInstance.GetType(), actionName, SanitizeTopicOrDefault(actionName, actionOptions.Topic));
 
                 yield return actionInstance;
             }
         }
+
+        private SystemActionMetadata CreateMetadata(Type actionType, string actionName, string topic)
+        {
+            var am = new SystemActionMetadata
+            {
+                Key = actionName,
+                Name = actionType.Name.Replace("Action", ""),
+                UniqueId = topicProvider.GetUniqueId(actionName),
+                StateTopic = topicProvider.GetStateTopic(topic),
+                CommandTopic = topicProvider.GetStateTopic(topic)
+            };
+            return am;
+        }
+
+        private static string SanitizeTopicOrDefault(string fallback, string? topic) =>
+            SanitizeHelpers.Sanitize(string.IsNullOrWhiteSpace(topic) ? fallback : topic);
     }
 }
