@@ -16,12 +16,10 @@ namespace Samqtt.Application
     {
         private readonly SamqttOptions _options = options.Value;
 
-        public IDictionary<string, ISystemSensor> GetEnabledSensors()
+        public IEnumerable<ISystemSensor> GetEnabledSensors()
         {
             var allSensors = serviceProvider.GetServices<ISystemSensor>();
             var allMultiSensors = serviceProvider.GetServices<ISystemMultiSensor>();
-
-            var sensors = new Dictionary<string, ISystemSensor>();
 
             // SENSORS
             foreach (var (sensorName, sensorOptions) in _options.Sensors)
@@ -41,7 +39,7 @@ namespace Samqtt.Application
 
                 sensorInstance.Metadata = CreateMetadata(sensorInstance.GetType(), sensorName, SanitizeTopicOrDefault(sensorName, sensorOptions.Topic));
 
-                sensors.Add(sensorName, sensorInstance);
+                yield return sensorInstance;
             }
 
             // MULTI-SENSORS
@@ -99,12 +97,11 @@ namespace Samqtt.Application
 
                         sensorInstance.Metadata = CreateMetadata(sensorInstance.GetType(), sensorName, childTopicName, childId);
 
-                        sensors.Add(sensorName, sensorInstance);
+                        yield return sensorInstance;
                     }
 
                 }
             }
-            return sensors;
         }
 
         private SystemSensorMetadata CreateMetadata(Type sensorType, string sensorName, string topic, string? instanceId = null)

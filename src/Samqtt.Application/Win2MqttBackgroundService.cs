@@ -17,8 +17,8 @@ namespace Samqtt.Application
         ILogger<SamqttBackgroundService> logger) : BackgroundService
     {
         private readonly static SemaphoreSlim _semaphore = new(1, 1);
-        private readonly IDictionary<string, ISystemSensor> _activeSensors = sensorFactory.GetEnabledSensors();
-        private readonly IDictionary<string, ISystemAction> _activeActions = actionFactory.GetEnabledActions();
+        private readonly IEnumerable<ISystemSensor> _activeSensors = sensorFactory.GetEnabledSensors();
+        private readonly IEnumerable<ISystemAction> _activeActions = actionFactory.GetEnabledActions();
 
 
         public override async Task StartAsync(CancellationToken stoppingToken)
@@ -31,15 +31,15 @@ namespace Samqtt.Application
             // Publish Home Assistant sensor discovery messages
             foreach (var sensor in _activeSensors)
             {
-                await publisher.PublishSensorDiscoveryMessage(sensor.Value.Metadata, stoppingToken);
+                await publisher.PublishSensorDiscoveryMessage(sensor.Metadata, stoppingToken);
             }
 
             foreach (var action in _activeActions)
             {
                 // Subscribe to incoming messages
-                await subscriber.SubscribeAsync(action.Value.Metadata.CommandTopic, action.Value.HandleAsync, stoppingToken);
+                await subscriber.SubscribeAsync(action.Metadata.CommandTopic, action.HandleAsync, stoppingToken);
                 // Publish Home Assistant switch discovery message
-                await publisher.PublishSwitchDiscoveryMessage(action.Value.Metadata, stoppingToken);
+                await publisher.PublishSwitchDiscoveryMessage(action.Metadata, stoppingToken);
             }
 
             // Publish online status
@@ -63,8 +63,8 @@ namespace Samqtt.Application
 
                         foreach (var sensor in _activeSensors)
                         {
-                            var collectedValue = await sensor.Value.CollectAsync();
-                            await publisher.PublishSensorValue(sensor.Value, collectedValue, stoppingToken);
+                            var collectedValue = await sensor.CollectAsync();
+                            await publisher.PublishSensorValue(sensor, collectedValue, stoppingToken);
                         }
                     }
                     finally

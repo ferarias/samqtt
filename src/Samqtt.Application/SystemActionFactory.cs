@@ -15,10 +15,9 @@ namespace Samqtt.Application
     {
         private readonly SamqttOptions _options = options.Value;
 
-        public IDictionary<string, ISystemAction> GetEnabledActions()
+        public IEnumerable<ISystemAction> GetEnabledActions()
         {
             var allActions = serviceProvider.GetServices<ISystemAction>();
-            var result = new Dictionary<string, ISystemAction>(StringComparer.OrdinalIgnoreCase);
 
             foreach (var (actionName, actionOptions) in _options.Actions)
             {
@@ -52,10 +51,8 @@ namespace Samqtt.Application
                     CommandTopic = topicProvider.GetStateTopic(topic)
                 };
 
-                result[actionName] = actionInstance;
+                yield return actionInstance;
             }
-
-            return result;
         }
     }
 }
