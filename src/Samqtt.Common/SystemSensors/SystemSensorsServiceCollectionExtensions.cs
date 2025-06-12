@@ -11,6 +11,7 @@ namespace Samqtt.SystemSensors
         /// Add system sensors to the service collection.
         /// </summary>
         /// <param name="services"></param>
+        /// <param name="assembly"></param>
         /// <returns></returns>
         public static IServiceCollection AddSystemSensorsFromAssembly(this IServiceCollection services, Assembly assembly)
         {
@@ -18,6 +19,7 @@ namespace Samqtt.SystemSensors
                 .Scan(scan => scan
                     .FromAssemblyDependencies(assembly)
                     .AddClasses(c => c.AssignableTo<ISystemSensor>(), publicOnly: true)
+                    .AsSelf()
                     .As<ISystemSensor>()
                     .WithSingletonLifetime())
                 .Scan(scan => scan

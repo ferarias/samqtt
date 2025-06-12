@@ -1,5 +1,4 @@
-﻿using System.Reflection;
-using Microsoft.Extensions.DependencyInjection;
+﻿using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Samqtt.Common;
@@ -15,45 +14,45 @@ namespace Samqtt.Application
         ILogger<SystemActionFactory> logger) : ISystemActionFactory
     {
         private readonly SamqttOptions _options = options.Value;
-        private static readonly Dictionary<string, (Type HandlerType, PropertyInfo? ReturnProperty)> _handlers = [];
 
         public IDictionary<string, ISystemAction> GetEnabledActions()
         {
             var allActions = serviceProvider.GetServices<ISystemAction>();
             var result = new Dictionary<string, ISystemAction>(StringComparer.OrdinalIgnoreCase);
 
-            foreach (var (actionKey, actionOptions) in _options.Actions)
+            foreach (var (actionName, actionOptions) in _options.Actions)
             {
                 if (!actionOptions.Enabled)
                 {
-                    logger.LogInformation("Action {Action} is disabled in configuration", actionKey);
+                    logger.LogInformation("Action {Action} is disabled in configuration", actionName);
                     continue;
                 }
 
-                var matching = allActions.FirstOrDefault(a => a.GetType().Name.Equals(actionKey + "Action", StringComparison.OrdinalIgnoreCase));
+                var actionInstance = allActions
+                    .FirstOrDefault(a => a.GetType().Name.Equals(actionName + "Action", StringComparison.OrdinalIgnoreCase));
 
-                if (matching == null)
+                if (actionInstance == null)
                 {
-                    logger.LogWarning("No matching ISystemAction implementation found for key: {Action}", actionKey);
+                    logger.LogWarning("No actionInstance ISystemAction implementation found for key: {Action}", actionName);
                     continue;
                 }
 
                 var topic = string.IsNullOrWhiteSpace(actionOptions.Topic)
-                    ? SanitizeHelpers.Sanitize(actionKey)
+                    ? SanitizeHelpers.Sanitize(actionName)
                     : SanitizeHelpers.Sanitize(actionOptions.Topic);
 
-                var uniqueId = topicProvider.GetUniqueId(actionKey);
+                var uniqueId = topicProvider.GetUniqueId(actionName);
 
-                matching.Metadata = new SystemActionMetadata
+                actionInstance.Metadata = new SystemActionMetadata
                 {
-                    Key = actionKey,
-                    Name = matching.GetType().Name.Replace("Action", ""),
+                    Key = actionName,
+                    Name = actionInstance.GetType().Name.Replace("Action", ""),
                     UniqueId = uniqueId,
                     StateTopic = topicProvider.GetStateTopic(topic),
                     CommandTopic = topicProvider.GetStateTopic(topic)
                 };
 
-                result[actionKey] = matching;
+                result[actionName] = actionInstance;
             }
 
             return result;
