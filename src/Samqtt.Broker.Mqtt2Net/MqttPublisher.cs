@@ -10,8 +10,6 @@ namespace Samqtt.Broker.MQTTNet
         private readonly IMqttClient _client = client;
         private readonly ILogger<MqttPublisher> _logger = logger;
 
-        public Task PublishAsync((string Topic, string Payload) message, bool retain, CancellationToken cancellationToken = default) => 
-            PublishAsync(message.Topic, message.Payload, retain, cancellationToken);
 
         public async Task PublishAsync(string topic, string message, bool retain = false, CancellationToken cancellationToken = default)
         {

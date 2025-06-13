@@ -8,6 +8,7 @@ namespace Samqtt.Application
     {
         public static IServiceCollection AddSamqttApplication(this IServiceCollection services) =>
             services
+            .AddSingleton<ITopicProvider, TopicProvider>()
             .AddSingleton<ISystemSensorFactory, SystemSensorFactory>()
             .AddSingleton<ISystemActionFactory, SystemActionFactory>();
     }

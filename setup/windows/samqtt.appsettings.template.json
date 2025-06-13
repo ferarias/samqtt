@@ -7,7 +7,6 @@
             "Password": "{{MQTT_PASSWORD}}"
         },
         "DeviceIdentifier": "{{DEVICE_IDENTIFIER}}",
-        "MqttTopicQoS": 1,
         "TimerInterval": 5,
         "Sensors": {
             "Timestamp": {
@@ -42,7 +41,7 @@
                 }
             }
         },
-        "Listeners": {
+        "Actions": {
             "Hibernate": {
                 "Topic": "hibernate",
                 "Enabled": true

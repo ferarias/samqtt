@@ -4,7 +4,7 @@ namespace Samqtt.SystemActions
 {
     public interface ISystemActionFactory
     {
-        IDictionary<string, ISystemAction> GetEnabledActions();
+        IEnumerable<ISystemAction> GetEnabledActions();
     }
 
 }
