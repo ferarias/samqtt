@@ -63,8 +63,15 @@ namespace Samqtt.Application
 
                         foreach (var sensor in _activeSensors)
                         {
-                            var collectedValue = await sensor.CollectAsync();
-                            await publisher.PublishSensorValue(sensor, collectedValue, stoppingToken);
+                            try
+                            {
+                                var collectedValue = await sensor.CollectAsync();
+                                await publisher.PublishSensorValue(sensor, collectedValue, stoppingToken);
+                            }
+                            catch (Exception ex)
+                            {
+                                logger.LogWarning(ex, "Failed to collect from sensor {Sensor}", sensor.Metadata.Name);
+                            }
                         }
                     }
                     finally
