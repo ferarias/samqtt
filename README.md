@@ -12,6 +12,21 @@ The application is a service that runs in the background, collects system inform
 
 It uses the MQTT protocol to communicate with the broker and publish sensor data.
 
+### Main Architectural Blocks
+
+1. **Core Service** ([SamqttBackgroundService](./src/Samqtt.Application/Win2MqttBackgroundService.cs))
+  - Handles MQTT connections, sensor polling, and action handling
+  - Uses a factory pattern for sensors and actions
+  - Implements BackgroundService for Windows/Linux service hosting
+2. **Sensor System**
+  - Split between common (SystemSensors) and platform-specific (SystemSensors.Windows) implementations
+  - Uses factory pattern for instantiation
+  - Supports both simple and multi-sensors
+3. **Action System**
+  - Similar architecture to sensors
+  - Handles MQTT commands through subscriptions
+  - Platform-specific implementations in separate assemblies
+
 ## Installation
 
 In both Linux and Windows there's an installer available. Keep these values at hand before installing

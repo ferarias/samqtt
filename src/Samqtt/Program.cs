@@ -1,46 +1,41 @@
-using Serilog;
-using Samqtt.Application;
+﻿using Samqtt.Application;
 using Samqtt.Broker.MQTTNet;
 using Samqtt.HomeAssistant;
 using Samqtt.Options;
-using Samqtt.SystemSensors;
 using Samqtt.SystemActions;
+using Samqtt.SystemSensors;
+using Serilog;
 using Samqtt;
 
-
 #if WINDOWS
-using Samqtt.SystemSensors.Windows;
 using Samqtt.SystemActions.Windows;
+using Samqtt.SystemSensors.Windows;
+using Serilog.Events;
 #endif
 
 Log.Logger = new LoggerConfiguration()
     .Enrich.FromLogContext()
     .WriteTo.Console()
+#if WINDOWS
+    .WriteTo.EventLog(Constants.ServiceName, restrictedToMinimumLevel: LogEventLevel.Information)
+#endif
     .CreateBootstrapLogger();
 
 #if WINDOWS
-// Manage installation and uninstallation of the service (CliWrap)
 if (await WindowsServiceInstaller.HandleServiceInstallationAsync(args))
     return;
 #endif
 
 try
 {
-    Log.Information("Start application.");
-
+    Log.Information($"{Constants.ServiceName} is starting.");
     var builder = Host.CreateApplicationBuilder(args);
-#if !DEBUG
-#if WINDOWS
-    var appDataConfigPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData), Constants.AppId, Constants.UserAppSettingsFile);
-    Log.Information("Applying custom settings from {ConfigPath}", appDataConfigPath);
-    builder.Configuration.AddJsonFile(appDataConfigPath, optional: true);
-#else
-    var appDataConfigPath = Path.Combine("/etc/", Constants.AppId.ToLowerInvariant(), Constants.UserAppSettingsFile);
-    Log.Information("Applying custom settings from {ConfigPath}", appDataConfigPath);
-    builder.Configuration.AddJsonFile(appDataConfigPath, optional: true);
-#endif
-#endif
 
+    if (File.Exists(EnvironmentConstants.UserAppSettingsFile))
+    {
+        Log.Information("Applying custom settings from {ConfigPath}", EnvironmentConstants.UserAppSettingsFile);
+        builder.Configuration.AddJsonFile(EnvironmentConstants.UserAppSettingsFile, optional: true);
+    }
     builder.Services
         .AddHostedService<SamqttBackgroundService>();
 
@@ -49,7 +44,11 @@ try
             .ReadFrom.Configuration(builder.Configuration)
             .ReadFrom.Services(services)
             .Enrich.FromLogContext()
-            .WriteTo.Console());
+            .WriteTo.Console()
+#if WINDOWS
+            .WriteTo.EventLog(Constants.ServiceName, restrictedToMinimumLevel: LogEventLevel.Error)
+#endif
+            );
 
     builder.Services
         .AddSamqttOptions()
@@ -67,6 +66,8 @@ try
 #endif
 
     await builder.Build().RunAsync();
+
+    Log.Information($"{Constants.ServiceName} ended normally.");
 }
 catch (Exception ex)
 {

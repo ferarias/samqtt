@@ -30,6 +30,10 @@
         <PackageReference Include="Serilog.Sinks.File" Version="7.0.0" />
         <PackageReference Include="Serilog.Sinks.Seq" Version="8.0.0" />
     </ItemGroup>
+	
+    <ItemGroup Condition="'$(TargetFramework)'=='net8.0-windows8.0'">
+        <PackageReference Include="Serilog.Sinks.EventLog" Version="4.*" />
+    </ItemGroup>
 
     <ItemGroup Condition="'$(TargetFramework)'=='net8.0-windows8.0'">
         <PackageReference Include="CliWrap" Version="3.8.2" />
