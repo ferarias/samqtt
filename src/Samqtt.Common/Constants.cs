@@ -1,4 +1,6 @@
-﻿namespace Samqtt
+﻿using System.IO;
+
+namespace Samqtt
 {
     public static class Constants
     {
@@ -6,6 +8,6 @@
 
         public const string ServiceName = "SAMQTT Service";
 
-        public static readonly string UserAppSettingsFile = $"{AppId.ToLowerInvariant()}.appsettings.json";
+        public static readonly string UserAppSettingsFileName = $"{AppId.ToLowerInvariant()}.appsettings.json";
     }
 }
