@@ -7,12 +7,11 @@ namespace Samqtt.Broker.MQTTNet
 {
     public class MqttConnector(
         IMqttClient client,
-        IMqttPublisher publisher,
+        ITopicProvider topicProvider,
         IOptions<SamqttOptions> options,
         ILogger<MqttConnector> logger) : IMqttConnectionManager, IAsyncDisposable
     {
         private readonly IMqttClient _client = client;
-        private readonly IMqttPublisher publisher = publisher;
 
         private readonly SamqttOptions _options = options.Value;
         private readonly ILogger _logger = logger;
@@ -36,7 +35,7 @@ namespace Samqtt.Broker.MQTTNet
                     }
 
                     var mqttClientOptions = mqttOptionsBuilder
-                        .WithWillTopic($"{options.Value.MqttBaseTopic}/status")
+                        .WithWillTopic(topicProvider.StatusTopic)
                         .WithWillPayload("offline")
                         .WithWillRetain(true)
                         .Build();
@@ -69,7 +68,7 @@ namespace Samqtt.Broker.MQTTNet
             if (_client?.IsConnected == true)
             {
                 var unsubscribeOptions = new MqttClientUnsubscribeOptionsBuilder()
-                    .WithTopicFilter($"{options.Value.MqttBaseTopic}/#")
+                    .WithTopicFilter(topicProvider.UnsubscribeTopic)
                     .Build();
                 await _client.UnsubscribeAsync(unsubscribeOptions, cancellationToken);
                 _logger.LogInformation("Unsubscribed from MQTT topics.");

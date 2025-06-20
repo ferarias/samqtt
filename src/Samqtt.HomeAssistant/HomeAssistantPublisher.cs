@@ -1,17 +1,15 @@
-﻿using System.Text.Json;
-using System.Text.Json.Serialization;
-using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Options;
-using Samqtt.Options;
+﻿using Microsoft.Extensions.Logging;
 using Samqtt.SystemActions;
 using Samqtt.SystemSensors;
+using System.Text.Json;
+using System.Text.Json.Serialization;
 
 namespace Samqtt.HomeAssistant
 {
     public class HomeAssistantPublisher(
         IMqttPublisher mqttPublisher,
+        ITopicProvider topicProvider,
         ISystemSensorValueFormatter sensorValueFormatter,
-        IOptions<SamqttOptions> options,
         ILogger<HomeAssistantPublisher> logger)
         : IMessagePublisher
     {
@@ -23,24 +21,22 @@ namespace Samqtt.HomeAssistant
 
         private readonly object DeviceInfo = new
         {
-            identifiers = new[] { options.Value.DeviceUniqueId },
-            name = $"SAMQTT - {options.Value.DeviceUniqueId}",
+            identifiers = new[] { topicProvider.DeviceIdentifier },
+            name = $"SAMQTT - { topicProvider.DeviceIdentifier }",
             manufacturer = "FerArias",
             model = "SAMQTT"
         };
 
         public async Task PublishOnlineStatus(CancellationToken cancellationToken = default)
         {
-            var statusTopic = $"{options.Value.MqttBaseTopic}/status";
-            await mqttPublisher.PublishAsync(statusTopic, "online", retain: true, cancellationToken);
-            logger.LogDebug("Published HA online status in {Topic}", statusTopic);
+            await mqttPublisher.PublishAsync(topicProvider.StatusTopic, "online", retain: true, cancellationToken);
+            logger.LogDebug("Published online status");
         }
 
         public async Task PublishOfflineStatus(CancellationToken cancellationToken = default)
         {
-            var statusTopic = $"{options.Value.MqttBaseTopic}/status";
-            await mqttPublisher.PublishAsync(statusTopic, "offline", retain: true, cancellationToken: cancellationToken);
-            logger.LogDebug("Published HA offline status for {Topic}", statusTopic);
+            await mqttPublisher.PublishAsync(topicProvider.StatusTopic, "offline", retain: true, cancellationToken: cancellationToken);
+            logger.LogDebug("Published offline status");
         }
 
         public async Task PublishSensorValue(ISystemSensor sensor, object? value, CancellationToken cancellationToken = default)
@@ -78,7 +74,7 @@ namespace Samqtt.HomeAssistant
                 ["name"] = metadata.Name,
                 ["state_topic"] = metadata.StateTopic,
                 ["unique_id"] = metadata.UniqueId,
-                ["availability_topic"] = $"{options.Value.MqttBaseTopic}/status",
+                ["availability_topic"] = topicProvider.StatusTopic,
                 ["device"] = DeviceInfo
             };
 
@@ -89,9 +85,8 @@ namespace Samqtt.HomeAssistant
             string? discoveryTopic;
             if (metadata?.IsBinary == true)
             {
-                // Binary-specific fields
-                payloadDict["payload_on"] = "1";
-                payloadDict["payload_off"] = "0";
+                if (!string.IsNullOrWhiteSpace(metadata?.PayloadOn)) payloadDict["payload_on"] = metadata.PayloadOn;
+                if (!string.IsNullOrWhiteSpace(metadata?.PayloadOff)) payloadDict["payload_off"] = metadata.PayloadOff;
 
                 discoveryTopic = $"{HomeAssistantTopics.BaseTopic}/binary_sensor/{metadata.UniqueId}/config";
             }
@@ -130,7 +125,7 @@ namespace Samqtt.HomeAssistant
                 ["name"] = metadata.Name,
                 ["state_topic"] = metadata.StateTopic,
                 ["unique_id"] = metadata.UniqueId,
-                ["availability_topic"] = $"{options.Value.MqttBaseTopic}/status",
+                ["availability_topic"] = topicProvider.StatusTopic,
                 ["command_topic"] = metadata.CommandTopic,
                 ["payload_on"] = "ON",
                 ["payload_off"] = "OFF",
