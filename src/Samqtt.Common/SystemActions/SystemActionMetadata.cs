@@ -1,15 +1,10 @@
 ﻿namespace Samqtt.SystemActions
 {
-    public class SystemActionMetadata
+    public class SystemActionMetadata : MetadataBase
     {
-        public required string Key { get; set; }
-
-        public required string Name { get; set; }
-
-        public required string UniqueId { get; set; }
-
-        public required string StateTopic { get; set; }
-
+        /// <summary>
+        /// This is the topic where the action can be triggered.
+        /// </summary>
         public required string CommandTopic { get; set; }
     }
 }

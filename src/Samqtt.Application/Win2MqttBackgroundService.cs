@@ -38,8 +38,8 @@ namespace Samqtt.Application
             {
                 // Subscribe to incoming messages
                 await subscriber.SubscribeAsync(action.Metadata.CommandTopic, action.HandleAsync, stoppingToken);
-                // Publish Home Assistant switch discovery message
-                await publisher.PublishSwitchDiscoveryMessage(action.Metadata, stoppingToken);
+                // Publish Home Assistant button discovery message
+                await publisher.PublishActionStateDiscoveryMessage(action.Metadata, stoppingToken);
             }
 
             // Publish online status

@@ -1,17 +1,12 @@
 ﻿
 namespace Samqtt.SystemSensors
 {
-    public class SystemSensorMetadata
+    public class SystemSensorMetadata : MetadataBase
     {
-        public string Key { get; init; } = default!;
-
+        /// <summary>
+        /// Used in multi-sensor contexts to differentiate between "child" instances.
+        /// </summary>
         public string? InstanceId { get; init; }
-
-        public string Name { get; set; } = default!;
-
-        public string? UniqueId { get; set; }
-
-        public string? StateTopic { get; set; }
 
         public bool IsBinary { get; set; }
 
@@ -22,6 +17,7 @@ namespace Samqtt.SystemSensors
         public string? StateClass { get; set; }
 
         public string? PayloadOn { get; set; } = "on";
+
         public string? PayloadOff { get; set; } = "off";
     }
 }

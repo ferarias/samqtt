@@ -3,6 +3,5 @@
     public class SystemSensorOptions
     {
         public bool Enabled { get; set; } = true;
-        public string? Topic { get; set; }
     }
 }

@@ -5,7 +5,6 @@ namespace Samqtt.Options
     public class SystemMultiSensorOptions
     {
         public bool Enabled { get; set; } = true;
-        public string? Topic { get; set; }
 
         public required Dictionary<string, SystemSensorOptions> Sensors { get; set; }
 

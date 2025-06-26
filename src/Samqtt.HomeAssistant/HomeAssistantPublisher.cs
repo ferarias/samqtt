@@ -21,10 +21,10 @@ namespace Samqtt.HomeAssistant
 
         private readonly object DeviceInfo = new
         {
-            identifiers = new[] { topicProvider.DeviceIdentifier },
-            name = $"SAMQTT - { topicProvider.DeviceIdentifier }",
+            identifiers = new[] { "TBD" },
+            name = $"{Constants.AppId} - {"TBD"}",
             manufacturer = "FerArias",
-            model = "SAMQTT"
+            model = Constants.AppId
         };
 
         public async Task PublishOnlineStatus(CancellationToken cancellationToken = default)
@@ -77,25 +77,17 @@ namespace Samqtt.HomeAssistant
                 ["availability_topic"] = topicProvider.StatusTopic,
                 ["device"] = DeviceInfo
             };
+            string discoveryTopic = metadata.DiscoveryTopic;
 
             if (!string.IsNullOrWhiteSpace(metadata?.UnitOfMeasurement)) payloadDict["unit_of_measurement"] = metadata.UnitOfMeasurement;
             if (!string.IsNullOrWhiteSpace(metadata?.StateClass)) payloadDict["state_class"] = metadata.StateClass;
             if (!string.IsNullOrWhiteSpace(metadata?.DeviceClass)) payloadDict["device_class"] = metadata.DeviceClass;
 
-            string? discoveryTopic;
             if (metadata?.IsBinary == true)
             {
                 if (!string.IsNullOrWhiteSpace(metadata?.PayloadOn)) payloadDict["payload_on"] = metadata.PayloadOn;
                 if (!string.IsNullOrWhiteSpace(metadata?.PayloadOff)) payloadDict["payload_off"] = metadata.PayloadOff;
-
-                discoveryTopic = $"{HomeAssistantTopics.BaseTopic}/binary_sensor/{metadata.UniqueId}/config";
             }
-            else
-            {
-                discoveryTopic = $"{HomeAssistantTopics.BaseTopic}/sensor/{metadata?.UniqueId}/config";
-            }
-
-
 
             await mqttPublisher.PublishAsync(
                 discoveryTopic,
@@ -107,40 +99,36 @@ namespace Samqtt.HomeAssistant
 
         }
 
-        public async Task PublishSwitchDiscoveryMessage(SystemActionMetadata metadata, CancellationToken cancellationToken = default)
+        public async Task PublishActionStateDiscoveryMessage(SystemActionMetadata metadata, CancellationToken cancellationToken = default)
         {
             if (string.IsNullOrWhiteSpace(metadata?.CommandTopic))
             {
-                logger.LogWarning("Switch {Switch} has no command topic", metadata?.Key);
+                logger.LogWarning("Action {Action} has no command topic", metadata?.Key);
                 return;
             }
             if (string.IsNullOrWhiteSpace(metadata?.UniqueId))
             {
-                logger.LogWarning("Switch {Switch} has no unique ID", metadata?.Key);
+                logger.LogWarning("Action {Action} has no unique ID", metadata?.Key);
                 return;
             }
 
             var payloadDict = new Dictionary<string, object>
             {
-                ["name"] = metadata.Name,
+                ["name"] = $"{metadata.Name} result",
                 ["state_topic"] = metadata.StateTopic,
+                ["json_attributes_topic"] = topicProvider.GetActionJsonAttributesTopic(metadata.Key),
                 ["unique_id"] = metadata.UniqueId,
-                ["availability_topic"] = topicProvider.StatusTopic,
-                ["command_topic"] = metadata.CommandTopic,
-                ["payload_on"] = "ON",
-                ["payload_off"] = "OFF",
                 ["device"] = DeviceInfo
             };
 
-            var discoveryTopic = $"{HomeAssistantTopics.BaseTopic}/switch/{metadata.UniqueId}/config";
-
+            var discoveryTopic = topicProvider.GetActionDiscoveryTopic(metadata.Key);
             await mqttPublisher.PublishAsync(
                 discoveryTopic,
                 JsonSerializer.Serialize(payloadDict, jsonSerializerOptions),
                 retain: true,
                 cancellationToken: cancellationToken);
 
-            logger.LogInformation("Published HA switch discovery message for {Switch} in {Topic}", metadata?.Key, discoveryTopic);
+            logger.LogInformation("Published HA button discovery message for {Button} in {Topic}", metadata?.Key, discoveryTopic);
         }
     }
 }

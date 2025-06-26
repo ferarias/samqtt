@@ -34,7 +34,7 @@ namespace Samqtt.Application
                     continue;
                 }
 
-                actionInstance.Metadata = CreateMetadata(actionInstance.GetType(), actionName, SanitizeTopicOrDefault(actionName, actionOptions.Topic));
+                actionInstance.Metadata = CreateMetadata(actionInstance.GetType(), actionName, SanitizeHelpers.Sanitize(actionName));
 
                 yield return actionInstance;
             }
@@ -47,13 +47,11 @@ namespace Samqtt.Application
                 Key = actionName,
                 Name = actionType.Name.Replace("Action", ""),
                 UniqueId = topicProvider.GetUniqueId(actionName),
-                StateTopic = topicProvider.GetStateTopic(topic),
-                CommandTopic = topicProvider.GetStateTopic(topic)
+                StateTopic = topicProvider.GetActionStateTopic(topic),
+                CommandTopic = topicProvider.GetActionCommandTopic(topic),
+                DiscoveryTopic = topicProvider.GetActionDiscoveryTopic(topic)
             };
             return am;
         }
-
-        private static string SanitizeTopicOrDefault(string fallback, string? topic) =>
-            SanitizeHelpers.Sanitize(string.IsNullOrWhiteSpace(topic) ? fallback : topic);
     }
 }

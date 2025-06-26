@@ -47,8 +47,7 @@ namespace Samqtt.Application
 
                 sensorInstance.Metadata = CreateMetadata(
                     sensorInstance.GetType(),
-                    sensorName,
-                    SanitizeTopicOrDefault(sensorName, sensorOptions.Topic)
+                    SanitizeHelpers.Sanitize(sensorName)
                 );
 
                 yield return sensorInstance;
@@ -118,12 +117,11 @@ namespace Samqtt.Application
                     }
 
                     var childTopicName = string.Concat(
-                        SanitizeTopicOrDefault(multisensorName, multisensorOptions.Topic), '_',
-                        SanitizeTopicOrDefault(sensorName, childSensorOptions.Topic));
+                        SanitizeHelpers.Sanitize(multisensorName), '_',
+                        SanitizeHelpers.Sanitize(sensorName));
 
                     sensorInstance.Metadata = CreateMetadata(
                         sensorInstance.GetType(),
-                        sensorName,
                         childTopicName,
                         childId
                     );
@@ -133,15 +131,16 @@ namespace Samqtt.Application
             }
         }
 
-        private SystemSensorMetadata CreateMetadata(Type sensorType, string sensorName, string topic, string? instanceId = null)
+        private SystemSensorMetadata CreateMetadata(Type sensorType, string sensorName, string? instanceId = null)
         {
             var sm = new SystemSensorMetadata
             {
                 Key = sensorName,
                 Name = sensorType.Name.Replace("Sensor", string.Empty),
                 UniqueId = topicProvider.GetUniqueId(sensorName),
-                StateTopic = topicProvider.GetStateTopic(topic),
-                InstanceId = instanceId
+                StateTopic = topicProvider.GetSensorStateTopic(sensorName),
+                InstanceId = instanceId,
+                DiscoveryTopic = topicProvider.GetSensorDiscoveryTopic(sensorName, false),
             };
             if (Attribute.GetCustomAttribute(sensorType, typeof(HomeAssistantSensorAttribute)) is HomeAssistantSensorAttribute haAttr)
             {
@@ -149,17 +148,15 @@ namespace Samqtt.Application
                 sm.DeviceClass = haAttr.DeviceClass;
                 sm.StateClass = haAttr.StateClass;
             }
+
             if (Attribute.GetCustomAttribute(sensorType, typeof(HomeAssistantBinarySensorAttribute)) is HomeAssistantBinarySensorAttribute habAttr)
             {
                 sm.IsBinary = true;
                 sm.PayloadOn = habAttr.PayloadOn;
                 sm.PayloadOff = habAttr.PayloadOff;
+                sm.DiscoveryTopic = topicProvider.GetSensorDiscoveryTopic(sensorName, true);
             }
             return sm;
         }
-
-        private static string SanitizeTopicOrDefault(string fallback, string? topic) =>
-            SanitizeHelpers.Sanitize(string.IsNullOrWhiteSpace(topic) ? fallback : topic);
-
     }
 }

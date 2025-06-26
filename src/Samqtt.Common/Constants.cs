@@ -9,5 +9,7 @@ namespace Samqtt
         public const string ServiceName = "SAMQTT Service";
 
         public static readonly string UserAppSettingsFileName = $"{AppId.ToLowerInvariant()}.appsettings.json";
+
+        public const string HomeAssistantTopic = "homeassistant";
     }
 }

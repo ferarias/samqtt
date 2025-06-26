@@ -13,7 +13,7 @@ namespace Samqtt
 
         Task PublishSensorDiscoveryMessage(SystemSensorMetadata sensor, CancellationToken cancellationToken = default);
 
-        Task PublishSwitchDiscoveryMessage(SystemActionMetadata metadata, CancellationToken cancellationToken = default);
+        Task PublishActionStateDiscoveryMessage(SystemActionMetadata metadata, CancellationToken cancellationToken = default);
 
         Task PublishSensorValue(ISystemSensor sensor, object? value, CancellationToken cancellationToken = default);
 
