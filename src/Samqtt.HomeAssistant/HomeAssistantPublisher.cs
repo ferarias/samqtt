@@ -1,4 +1,6 @@
 ﻿using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
+using Samqtt.Options;
 using Samqtt.SystemActions;
 using Samqtt.SystemSensors;
 using System.Text.Json;
@@ -9,7 +11,7 @@ namespace Samqtt.HomeAssistant
     public class HomeAssistantPublisher(
         IMqttPublisher mqttPublisher,
         ITopicProvider topicProvider,
-        ISystemSensorValueFormatter sensorValueFormatter,
+        IOptionsMonitor<SamqttOptions> options,
         ILogger<HomeAssistantPublisher> logger)
         : IMessagePublisher
     {
@@ -21,10 +23,10 @@ namespace Samqtt.HomeAssistant
 
         private readonly object DeviceInfo = new
         {
-            identifiers = new[] { "TBD" },
-            name = $"{Constants.AppId} - {"TBD"}",
+            identifiers = new[] { Constants.AppId },
+            name = $"{Constants.AppId} - {options.CurrentValue?.DeviceIdentifier}",
             manufacturer = "FerArias",
-            model = Constants.AppId
+            model = "Generic Computer",
         };
 
         public async Task PublishOnlineStatus(CancellationToken cancellationToken = default)
@@ -39,24 +41,31 @@ namespace Samqtt.HomeAssistant
             logger.LogDebug("Published offline status");
         }
 
-        public async Task PublishSensorValue(ISystemSensor sensor, object? value, CancellationToken cancellationToken = default)
+        public async Task PublishSensorValue(string stateTopic, string value, CancellationToken cancellationToken = default)
         {
-            if (sensor.Metadata.StateTopic == null)
-            {
-                logger.LogWarning("Sensor {Sensor} has no state topic", sensor.Metadata.Key);
-                return;
-            }
             try
             {
-                await mqttPublisher.PublishAsync(sensor.Metadata.StateTopic, sensorValueFormatter.Format(value), false, cancellationToken: cancellationToken);
+                await mqttPublisher.PublishAsync(stateTopic, value, false, cancellationToken: cancellationToken);
             }
             catch (Exception ex)
             {
-                logger.LogWarning(ex, "Failed to publish sensor {Sensor}", sensor.Metadata.Key);
+                logger.LogWarning(ex, "Failed to publish sensor state to {Topic}", stateTopic);
             }
         }
 
-        public async Task PublishSensorDiscoveryMessage(SystemSensorMetadata metadata, CancellationToken cancellationToken = default)
+        public async Task PublishActionStateValue(string stateTopic, string value, CancellationToken cancellationToken = default)
+        {
+            try
+            {
+                await mqttPublisher.PublishAsync(stateTopic, value, false, cancellationToken: cancellationToken);
+            }
+            catch (Exception ex)
+            {
+                logger.LogWarning(ex, "Failed to publish action state to {Topic}", stateTopic);
+            }
+        }
+
+        public async Task PublishSensorStateDiscoveryMessage(SystemSensorMetadata metadata, CancellationToken cancellationToken = default)
         {
             if (metadata.StateTopic == null)
             {
@@ -116,7 +125,7 @@ namespace Samqtt.HomeAssistant
             {
                 ["name"] = $"{metadata.Name} result",
                 ["state_topic"] = metadata.StateTopic,
-                ["json_attributes_topic"] = topicProvider.GetActionJsonAttributesTopic(metadata.Key),
+                ["json_attributes_topic"] = metadata.JsonAttributesTopic,
                 ["unique_id"] = metadata.UniqueId,
                 ["device"] = DeviceInfo
             };
@@ -128,7 +137,7 @@ namespace Samqtt.HomeAssistant
                 retain: true,
                 cancellationToken: cancellationToken);
 
-            logger.LogInformation("Published HA button discovery message for {Button} in {Topic}", metadata?.Key, discoveryTopic);
+            logger.LogInformation("Published HA action discovery message for {Action} in {Topic}", metadata?.Key, discoveryTopic);
         }
     }
 }

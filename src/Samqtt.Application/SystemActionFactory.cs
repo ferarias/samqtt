@@ -47,9 +47,10 @@ namespace Samqtt.Application
                 Key = actionName,
                 Name = actionType.Name.Replace("Action", ""),
                 UniqueId = topicProvider.GetUniqueId(actionName),
-                StateTopic = topicProvider.GetActionStateTopic(topic),
+                DiscoveryTopic = topicProvider.GetActionDiscoveryTopic(topic),
                 CommandTopic = topicProvider.GetActionCommandTopic(topic),
-                DiscoveryTopic = topicProvider.GetActionDiscoveryTopic(topic)
+                StateTopic = topicProvider.GetActionStateTopic(topic),
+                JsonAttributesTopic = topicProvider.GetActionJsonAttributesTopic(topic)
             };
             return am;
         }

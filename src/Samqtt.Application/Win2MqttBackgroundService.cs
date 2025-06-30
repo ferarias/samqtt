@@ -13,6 +13,7 @@ namespace Samqtt.Application
         ISystemSensorFactory sensorFactory,
         IMessagePublisher publisher,
         IMqttSubscriber subscriber,
+        ISystemSensorValueFormatter sensorValueFormatter,
         IOptionsMonitor<SamqttOptions> options,
         ILogger<SamqttBackgroundService> logger) : BackgroundService
     {
@@ -31,14 +32,14 @@ namespace Samqtt.Application
             // Publish Home Assistant sensor discovery messages
             foreach (var sensor in _activeSensors)
             {
-                await publisher.PublishSensorDiscoveryMessage(sensor.Metadata, stoppingToken);
+                await publisher.PublishSensorStateDiscoveryMessage(sensor.Metadata, stoppingToken);
             }
 
             foreach (var action in _activeActions)
             {
                 // Subscribe to incoming messages
-                await subscriber.SubscribeAsync(action.Metadata.CommandTopic, action.HandleAsync, stoppingToken);
-                // Publish Home Assistant button discovery message
+                await subscriber.SubscribeAsync(action.Metadata, action.HandleAsync, stoppingToken);
+                // Publish Home Assistant discovery message
                 await publisher.PublishActionStateDiscoveryMessage(action.Metadata, stoppingToken);
             }
 
@@ -66,7 +67,7 @@ namespace Samqtt.Application
                             try
                             {
                                 var collectedValue = await sensor.CollectAsync();
-                                await publisher.PublishSensorValue(sensor, collectedValue, stoppingToken);
+                                await publisher.PublishSensorValue(sensor.Metadata.StateTopic, sensorValueFormatter.Format(collectedValue), stoppingToken);
                             }
                             catch (Exception ex)
                             {

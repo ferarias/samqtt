@@ -11,11 +11,12 @@ namespace Samqtt
 
         Task PublishOfflineStatus(CancellationToken cancellationToken = default);
 
-        Task PublishSensorDiscoveryMessage(SystemSensorMetadata sensor, CancellationToken cancellationToken = default);
+        Task PublishSensorStateDiscoveryMessage(SystemSensorMetadata metadata, CancellationToken cancellationToken = default);
 
         Task PublishActionStateDiscoveryMessage(SystemActionMetadata metadata, CancellationToken cancellationToken = default);
 
-        Task PublishSensorValue(ISystemSensor sensor, object? value, CancellationToken cancellationToken = default);
+        Task PublishSensorValue(string stateTopic, string value, CancellationToken cancellationToken = default);
+        Task PublishActionStateValue(string stateTopic, string value, CancellationToken cancellationToken = default);
 
     }
 }

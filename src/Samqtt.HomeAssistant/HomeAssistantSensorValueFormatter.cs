@@ -65,20 +65,6 @@ namespace Samqtt.HomeAssistant
                 return default;
             }
         }
-
-        public object? Deserialize(string? value, Type type)
-        {
-            if (string.IsNullOrWhiteSpace(value)) return null;
-
-            try
-            {
-                return JsonSerializer.Deserialize(value, type, JsonOptions);
-            }
-            catch
-            {
-                return null;
-            }
-        }
     }
 
 }

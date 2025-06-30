@@ -7,12 +7,13 @@ namespace Samqtt.SystemActions
     {
         public required SystemActionMetadata Metadata { get; set; }
 
-        public abstract Task<T> HandleCoreAsync(string payload, CancellationToken cancellationToken);
-
         public async Task<object?> HandleAsync(string payload, CancellationToken cancellationToken)
         {
             return await HandleCoreAsync(payload, cancellationToken);
         }
+
+        public abstract Task<T> HandleCoreAsync(string payload, CancellationToken cancellationToken);
+
     }
 
 }

@@ -53,6 +53,7 @@ namespace Samqtt.Application
         /// <param name="actionName">Action name</param>
         /// <returns></returns>
         public string GetActionStateTopic(string actionName) => $"{_appIdPrefix}/system_action/{_deviceIdentifier}/{SanitizeHelpers.Sanitize(actionName)}/state";
+        public string GetActionJsonAttributesTopic(string actionName) => $"{_appIdPrefix}/system_action/{_deviceIdentifier}/{SanitizeHelpers.Sanitize(actionName)}/attributes";
 
         /// <summary>
         /// eg: samqtt/system_action/lenovo_laptop/cpu_temperature/request
@@ -78,7 +79,6 @@ namespace Samqtt.Application
         /// <returns></returns>
         public string GetActionDiscoveryTopic(string actionName) => $"{Constants.HomeAssistantTopic}/sensor/{AppUniqueIdPrefix}_{SanitizeHelpers.Sanitize(actionName)}/config";
 
-        public string GetActionJsonAttributesTopic(string actionName) => GetActionStateTopic(actionName);
     }
 }
 
