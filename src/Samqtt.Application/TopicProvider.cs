@@ -7,6 +7,11 @@ namespace Samqtt.Application
 {
     public class TopicProvider(IOptionsMonitor<SamqttOptions> options) : ITopicProvider
     {
+        private const string SensorDomain = "sensor";
+        private const string BinarySensorDomain = "binary_sensor";
+        private const string SystemSensorPath = "system_sensor";
+        private const string SystemActionPath = "system_action";
+
         /// <summary>
         /// eg: samqtt
         /// </summary>
@@ -24,7 +29,7 @@ namespace Samqtt.Application
         private string AppUniqueIdPrefix => $"{_appIdPrefix}_{_deviceIdentifier}";
 
         /// <summary>
-        /// eg: samqtt/lenovo_laptop/status
+        /// Home Assistant availability topic, e.g. samqtt/lenovo_laptop/status
         /// </summary>
         public string StatusTopic => $"{_appIdPrefix}/{_deviceIdentifier}/status";
 
@@ -45,39 +50,45 @@ namespace Samqtt.Application
         /// </summary>
         /// <param name="sensorName">Sensor name</param>
         /// <returns></returns>
-        public string GetSensorStateTopic(string sensorName) => $"{_appIdPrefix}/system_sensor/{_deviceIdentifier}/{SanitizeHelpers.Sanitize(sensorName)}/state";
+        public string GetSensorStateTopic(string sensorName) => $"{_appIdPrefix}/{SystemSensorPath}/{_deviceIdentifier}/{SanitizeHelpers.Sanitize(sensorName)}/state";
 
         /// <summary>
         /// eg: samqtt/system_action/lenovo_laptop/cpu_temperature/state
         /// </summary>
         /// <param name="actionName">Action name</param>
         /// <returns></returns>
-        public string GetActionStateTopic(string actionName) => $"{_appIdPrefix}/system_action/{_deviceIdentifier}/{SanitizeHelpers.Sanitize(actionName)}/state";
-        public string GetActionJsonAttributesTopic(string actionName) => $"{_appIdPrefix}/system_action/{_deviceIdentifier}/{SanitizeHelpers.Sanitize(actionName)}/attributes";
+        public string GetActionStateTopic(string actionName) => $"{_appIdPrefix}/{SystemActionPath}/{_deviceIdentifier}/{SanitizeHelpers.Sanitize(actionName)}/state";
+        public string GetActionJsonAttributesTopic(string actionName) => $"{_appIdPrefix}/{SystemActionPath}/{_deviceIdentifier}/{SanitizeHelpers.Sanitize(actionName)}/attributes";
 
         /// <summary>
         /// eg: samqtt/system_action/lenovo_laptop/cpu_temperature/request
         /// </summary>
         /// <param name="actionName"></param>
         /// <returns></returns>
-        public string GetActionCommandTopic(string actionName) => $"{_appIdPrefix}/system_action/{_deviceIdentifier}/{SanitizeHelpers.Sanitize(actionName)}/request";
+        public string GetActionCommandTopic(string actionName) => $"{_appIdPrefix}/{SystemActionPath}/{_deviceIdentifier}/{SanitizeHelpers.Sanitize(actionName)}/request";
 
         /// <summary>
-        /// eg: homeassistant/sensor|binary_sensor/samqtt_lenovo_laptop_cpu_temperature/config
+        /// eg: homeassistant/binary_sensor/samqtt_lenovo_laptop_cpu_temperature/config
         /// </summary>
-        /// <param name="sensorName">Sensor name</param>
-        /// <param name="isBinary">Is a binary sensor</param>
+        /// <param name="sensorName">Binary sensor name</param>
         /// <returns></returns>
-        public string GetSensorDiscoveryTopic(string sensorName, bool isBinary) => isBinary 
-            ? $"{Constants.HomeAssistantTopic}/binary_sensor/{AppUniqueIdPrefix}_{SanitizeHelpers.Sanitize(sensorName)}/config"
-            : $"{Constants.HomeAssistantTopic}/sensor/{AppUniqueIdPrefix}_{SanitizeHelpers.Sanitize(sensorName)}/config";
+        public string GetBinarySensorDiscoveryTopic(string sensorName) => $"{Constants.HomeAssistantTopic}/{BinarySensorDomain}/{AppUniqueIdPrefix}_{SanitizeHelpers.Sanitize(sensorName)}/config";
 
         /// <summary>
         /// eg: homeassistant/sensor/samqtt_lenovo_laptop_cpu_temperature/config
         /// </summary>
+        /// <param name="sensorName">Sensor name</param>
+        /// <returns></returns>
+        public string GetStandardSensorDiscoveryTopic(string sensorName) => $"{Constants.HomeAssistantTopic}/{SensorDomain}/{AppUniqueIdPrefix}_{SanitizeHelpers.Sanitize(sensorName)}/config";
+
+        /// <summary>
+        /// Home Assistant discovery topic for a virtual sensor representing the output of a system action.
+        /// eg: homeassistant/sensor/samqtt_lenovo_laptop_cpu_temperature/config
+        /// </summary>
         /// <param name="actionName">Action name</param>
         /// <returns></returns>
-        public string GetActionDiscoveryTopic(string actionName) => $"{Constants.HomeAssistantTopic}/sensor/{AppUniqueIdPrefix}_{SanitizeHelpers.Sanitize(actionName)}/config";
+        public string GetActionResponseDiscoveryTopic(string actionName) => $"{Constants.HomeAssistantTopic}/{SensorDomain}/{AppUniqueIdPrefix}_{SanitizeHelpers.Sanitize(actionName)}/config";
+        public string GetButtonDiscoveryTopic(string actionName) => $"{Constants.HomeAssistantTopic}/button/{AppUniqueIdPrefix}_{SanitizeHelpers.Sanitize(actionName)}/config";
 
     }
 }

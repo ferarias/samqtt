@@ -140,7 +140,7 @@ namespace Samqtt.Application
                 UniqueId = topicProvider.GetUniqueId(sensorName),
                 StateTopic = topicProvider.GetSensorStateTopic(sensorName),
                 InstanceId = instanceId,
-                DiscoveryTopic = topicProvider.GetSensorDiscoveryTopic(sensorName, false),
+                DiscoveryTopic = topicProvider.GetStandardSensorDiscoveryTopic(sensorName),
             };
             if (Attribute.GetCustomAttribute(sensorType, typeof(HomeAssistantSensorAttribute)) is HomeAssistantSensorAttribute haAttr)
             {
@@ -154,7 +154,7 @@ namespace Samqtt.Application
                 sm.IsBinary = true;
                 sm.PayloadOn = habAttr.PayloadOn;
                 sm.PayloadOff = habAttr.PayloadOff;
-                sm.DiscoveryTopic = topicProvider.GetSensorDiscoveryTopic(sensorName, true);
+                sm.DiscoveryTopic = topicProvider.GetBinarySensorDiscoveryTopic(sensorName);
             }
             return sm;
         }

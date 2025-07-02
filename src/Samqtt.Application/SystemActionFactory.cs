@@ -1,7 +1,6 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
-using Samqtt.Common;
 using Samqtt.Options;
 using Samqtt.SystemActions;
 
@@ -34,23 +33,23 @@ namespace Samqtt.Application
                     continue;
                 }
 
-                actionInstance.Metadata = CreateMetadata(actionInstance.GetType(), actionName, SanitizeHelpers.Sanitize(actionName));
+                actionInstance.Metadata = CreateMetadata(actionInstance.GetType(), actionName);
 
                 yield return actionInstance;
             }
         }
 
-        private SystemActionMetadata CreateMetadata(Type actionType, string actionName, string topic)
+        private SystemActionMetadata CreateMetadata(Type actionType, string actionName)
         {
             var am = new SystemActionMetadata
             {
                 Key = actionName,
                 Name = actionType.Name.Replace("Action", ""),
                 UniqueId = topicProvider.GetUniqueId(actionName),
-                DiscoveryTopic = topicProvider.GetActionDiscoveryTopic(topic),
-                CommandTopic = topicProvider.GetActionCommandTopic(topic),
-                StateTopic = topicProvider.GetActionStateTopic(topic),
-                JsonAttributesTopic = topicProvider.GetActionJsonAttributesTopic(topic)
+                DiscoveryTopic = topicProvider.GetActionResponseDiscoveryTopic(actionName),
+                CommandTopic = topicProvider.GetActionCommandTopic(actionName),
+                StateTopic = topicProvider.GetActionStateTopic(actionName),
+                JsonAttributesTopic = topicProvider.GetActionJsonAttributesTopic(actionName)
             };
             return am;
         }

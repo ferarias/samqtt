@@ -130,7 +130,7 @@ namespace Samqtt.HomeAssistant
                 ["device"] = DeviceInfo
             };
 
-            var discoveryTopic = topicProvider.GetActionDiscoveryTopic(metadata.Key);
+            var discoveryTopic = topicProvider.GetActionResponseDiscoveryTopic(metadata.Key);
             await mqttPublisher.PublishAsync(
                 discoveryTopic,
                 JsonSerializer.Serialize(payloadDict, jsonSerializerOptions),
