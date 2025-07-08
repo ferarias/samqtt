@@ -110,6 +110,11 @@ namespace Samqtt.HomeAssistant
 
         public async Task PublishActionStateDiscoveryMessage(SystemActionMetadata metadata, CancellationToken cancellationToken = default)
         {
+            if (metadata.StateTopic == null || metadata.JsonAttributesTopic == null)
+            {
+                logger.LogInformation("Action {Action} does not return anything and therefore has no state topic", metadata?.Key);
+                return;
+            }
             if (string.IsNullOrWhiteSpace(metadata?.CommandTopic))
             {
                 logger.LogWarning("Action {Action} has no command topic", metadata?.Key);

@@ -20,14 +20,8 @@
         public required string UniqueId { get; set; }
 
         /// <summary>
-        /// When a value is returned, this topic is used to publish the state.
-        /// </summary>
-        public required string StateTopic { get; set; }
-
-        /// <summary>
         /// This is the topic where the action/sensor is discovered in Home Assistant.
         /// </summary>
         public required string DiscoveryTopic { get; set; }
-
     }
 }

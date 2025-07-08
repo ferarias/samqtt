@@ -16,6 +16,8 @@ namespace Samqtt.SystemSensors
 
         public string? StateClass { get; set; }
 
+        public required string StateTopic { get; set; }
+
         public string? PayloadOn { get; set; } = "on";
 
         public string? PayloadOff { get; set; } = "off";
