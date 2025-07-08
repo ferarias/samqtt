@@ -62,7 +62,7 @@ try
     builder.Services
         .AddWindowsSpecificSystemSensors()
         .AddWindowsSpecificSystemActions()
-        .AddWindowsService(options => options.ServiceName = $"{Constants.AppId} Service");
+        .AddWindowsService(options => options.ServiceName = $"{Constants.AppId.ToUpperInvariant()} Service");
 #endif
 
     await builder.Build().RunAsync();

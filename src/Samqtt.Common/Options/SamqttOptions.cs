@@ -6,7 +6,7 @@ namespace Samqtt.Options
 {
     public class SamqttOptions
     {
-        public static readonly string SectionName = Constants.AppId;
+        public static readonly string SectionName = Constants.AppId.ToLowerInvariant();
 
         [Required]
         public required MqttBrokerOptions Broker { get; set; }

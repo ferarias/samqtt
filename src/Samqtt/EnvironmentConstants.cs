@@ -5,7 +5,7 @@
 #if WINDOWS
         public static readonly string UserAppSettingsFile = Path.Combine(
             Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData), 
-            Constants.AppId, 
+            Constants.AppId.ToLowerInvariant(), 
             Constants.UserAppSettingsFileName);
 #else
         public static readonly string UserAppSettingsFile = Path.Combine(

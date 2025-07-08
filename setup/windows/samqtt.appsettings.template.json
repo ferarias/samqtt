@@ -1,5 +1,5 @@
 {
-    "Samqtt": {
+    "samqtt": {
         "Broker": {
             "Server": "{{MQTT_SERVER}}",
             "Port": {{MQTT_PORT}},
@@ -43,39 +43,30 @@
         },
         "Actions": {
             "Hibernate": {
-                "Topic": "hibernate",
                 "Enabled": true
             },
             "Reboot": {
-                "Topic": "reboot",
                 "Enabled": true
             },
             "Shutdown": {
-                "Topic": "shutdown",
                 "Enabled": true
             },
             "Suspend": {
-                "Topic": "suspend",
                 "Enabled": true
             },
             "SendNotification": {
-                "Topic": "sendnotification",
-                "Enabled": false
+        "Enabled": true
             },
             "StartProcess": {
-                "Topic": "startprocess",
                 "Enabled": true
             },
             "KillProcess": {
-                "Topic": "killprocess",
                 "Enabled": true
             },
             "GetProcesses": {
-                "Topic": "getprocesses",
                 "Enabled": true
             },
             "GetProcess": {
-                "Topic": "getprocess",
                 "Enabled": true
             }
         }

@@ -4,7 +4,10 @@ namespace Samqtt
 {
     public static class Constants
     {
-        public const string AppId = "SAMQTT";
+        /// <summary>
+        /// An identifier of the application. Keep it in lowercase.
+        /// </summary>
+        public const string AppId = "samqtt";
 
         public const string ServiceName = "SAMQTT Service";
 
