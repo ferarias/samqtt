@@ -1,4 +1,13 @@
 {
+  "Serilog": {
+    "MinimumLevel": {
+      "Default": "Information",
+      "Override": {
+        "Microsoft": "Warning",
+        "System": "Warning"
+      }
+    }
+  },
     "samqtt": {
         "Broker": {
             "Server": "{{MQTT_SERVER}}",
@@ -27,16 +36,16 @@
         },
         "MultiSensors": {
             "Drive": {
-                "enabled": false,
+        "enabled": true,
                 "Sensors": {
                     "DriveFreeSize": {
-                        "enabled": false
+            "enabled": true
                     },
                     "DrivePercentFreeSize": {
-                        "enabled": false
+            "enabled": true
                     },
                     "DriveTotalSize": {
-                        "enabled": false
+            "enabled": true
                     }
                 }
             }
