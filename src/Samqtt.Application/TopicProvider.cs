@@ -20,7 +20,7 @@ namespace Samqtt.Application
         /// <summary>
         /// eg: lenovo_laptop
         /// </summary>
-        private readonly string _deviceIdentifier = options.CurrentValue?.DeviceIdentifier
+        private readonly string _deviceIdentifier = options.CurrentValue?.DeviceIdentifier.ToLowerInvariant()
                 ?? throw new ArgumentNullException(nameof(options), "SamqttOptions.DeviceIdentifier cannot be null.");
 
         /// <summary>
