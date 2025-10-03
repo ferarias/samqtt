@@ -23,7 +23,7 @@ namespace Samqtt.HomeAssistant
 
         private readonly object DeviceInfo = new
         {
-            identifiers = new[] { Constants.AppId.ToLowerInvariant() },
+            identifiers = new[] { $"{Constants.AppId.ToLowerInvariant()}_{options.CurrentValue?.DeviceIdentifier}" },
             name = $"{Constants.AppId.ToLowerInvariant()} - {options.CurrentValue?.DeviceIdentifier}",
             manufacturer = "FerArias",
             model = "Generic Computer",
