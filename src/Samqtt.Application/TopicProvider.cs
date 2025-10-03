@@ -92,5 +92,3 @@ namespace Samqtt.Application
 
     }
 }
-
-    
