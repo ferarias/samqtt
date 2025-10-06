@@ -3,113 +3,105 @@ name: .NET CI/CD
 on:
   push:
     tags:
-    - 'v*.*.*'
-    - 'v*.*.*-*'
+      - 'v*.*.*'
+      - 'v*.*.*-*'
   pull_request:
     branches:
-    - master
+      - master
 
 jobs:
   build:
-
     strategy:
       matrix:
-        os: [ ubuntu-latest, windows-latest ]
         include:
-        - os: ubuntu-latest
-          rid: linux-x64
-          framework: net8.0
-          configuration: Release
-          output: publish/linux
-        - os: windows-latest
-          rid: win-x64
-          framework: net8.0-windows8.0
-          configuration: Release-Windows
-          output: publish/windows
+          - os: ubuntu-latest
+            rid: linux-x64
+            framework: net8.0
+            output: publish/linux-x64
+          - os: ubuntu-latest
+            rid: linux-arm
+            framework: net8.0
+            output: publish/linux-arm
+          - os: ubuntu-latest
+            rid: linux-arm64
+            framework: net8.0
+            output: publish/linux-arm64
+          - os: windows-latest
+            rid: win-x64
+            framework: net8.0-windows8.0
+            output: publish/windows
 
     runs-on: ${{ matrix.os }}
 
     steps:
-    - uses: actions/checkout@v4
+      - uses: actions/checkout@v4
 
-    - name: Setup .NET
-      uses: actions/setup-dotnet@v4
-      with:
-        dotnet-version: 8.0.x
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 8.0.x
 
-    - name: Restore dependencies
-      run: dotnet restore src/Samqtt/Samqtt.csproj
+      - name: Restore dependencies
+        run: dotnet restore src/Samqtt/Samqtt.csproj
 
-    - name: Build
-      run: dotnet build --configuration Release --no-restore
+      - name: Build
+        run: dotnet build --configuration Release --no-restore
 
-    - name: Test
-      run: dotnet test --no-build --verbosity normal
+      - name: Test
+        run: dotnet test --no-build --verbosity normal
 
-    - name: Publish (only on tag)
-      if: startsWith(github.ref, 'refs/tags/v')
-      run: dotnet publish src/Samqtt/Samqtt.csproj --configuration ${{ matrix.configuration }} --framework ${{ matrix.framework }} --runtime ${{ matrix.rid }} --self-contained --output ${{ matrix.output }}
+      - name: Publish (only on tag)
+        if: startsWith(github.ref, 'refs/tags/v')
+        run: dotnet publish src/Samqtt/Samqtt.csproj --configuration Release --framework ${{ matrix.framework }} --runtime ${{ matrix.rid }} --self-contained --output ${{ matrix.output }}
 
-    - name: Prepare Linux release folder
-      if: matrix.os == 'ubuntu-latest' && startsWith(github.ref, 'refs/tags/v')
-      run: |
-        mkdir -p dist/samqtt
-        cp -r ${{ matrix.output }}/* dist/samqtt/
-        cp -r ./setup/linux/* dist/samqtt/
+      - name: Compress artifacts (Linux)
+        if: matrix.os == 'ubuntu-latest' && startsWith(github.ref, 'refs/tags/v')
+        run: |
+          cd ${{ matrix.output }}
+          tar -czf ../../samqtt-${{ matrix.rid }}.tar.gz .
 
-    - name: Compress artifacts on Linux
-      if: matrix.os == 'ubuntu-latest' && startsWith(github.ref, 'refs/tags/v')
-      run: |
-        tar -czf samqtt-${{ matrix.os }}.tar.gz -C dist samqtt
+      - name: Compress artifacts (Windows)
+        if: matrix.os == 'windows-latest' && startsWith(github.ref, 'refs/tags/v')
+        run: |
+          cd ${{ matrix.output }}
+          Compress-Archive -Path * -DestinationPath ..\..\samqtt-${{ matrix.rid }}.zip
 
-    - name: Compress artifacts on Windows
-      if: matrix.os == 'windows-latest' && startsWith(github.ref, 'refs/tags/v')
-      run: |
-        cd ${{ matrix.output }}
-        Compress-Archive -Path * -DestinationPath ..\..\samqtt-${{ matrix.os }}.zip
+      - name: Install Inno Setup on Windows
+        if: matrix.os == 'windows-latest' && startsWith(github.ref, 'refs/tags/v')
+        run: |
+          Invoke-WebRequest -Uri https://jrsoftware.org/download.php/is.exe -OutFile is.exe
+          Start-Process -FilePath is.exe -ArgumentList "/VERYSILENT" -Wait
 
-    - name: Install Inno Setup on Windows
-      if: matrix.os == 'windows-latest' && startsWith(github.ref, 'refs/tags/v')
-      run: |
-        Invoke-WebRequest -Uri https://jrsoftware.org/download.php/is.exe -OutFile is.exe
-        Start-Process -FilePath is.exe -ArgumentList "/VERYSILENT" -Wait
+      - name: Build Setup Script
+        if: matrix.os == 'windows-latest' && startsWith(github.ref, 'refs/tags/v')
+        run: |
+          & 'C:\Program Files\Inno Setup 6\ISCC.exe' setup\SamqttInstaller.iss /DMyAppVersion=${{ github.ref_name }}
 
-    - name: Build Setup Script
-      if: matrix.os == 'windows-latest' && startsWith(github.ref, 'refs/tags/v')
-      run: |
-        & "C:\Program Files (x86)\Inno Setup 6\ISCC.exe" setup\windows\SamqttInstaller.iss /DMyAppVersion=${{ github.ref_name }}
-
-    - name: Upload compressed artifact (only on tag)
-      if: startsWith(github.ref, 'refs/tags/v')
-      uses: actions/upload-artifact@v4
-      with:
-        name: samqtt-${{ matrix.os }}.${{ matrix.os == 'ubuntu-latest' && 'tar.gz' || 'zip' }}
-        path: samqtt-${{ matrix.os }}.${{ matrix.os == 'ubuntu-latest' && 'tar.gz' || 'zip' }}
-
-    - name: Upload installer exe (only on tag)
-      if: matrix.os == 'windows-latest' && startsWith(github.ref, 'refs/tags/v')
-      uses: actions/upload-artifact@v4
-      with:
-        name: SamqttSetup.exe
-        path: publish/setup/SamqttSetup.exe
+      - name: Upload artifacts (only on tag)
+        if: startsWith(github.ref, 'refs/tags/v')
+        uses: actions/upload-artifact@v4
+        with:
+          name: samqtt-${{ matrix.rid }}.${{ matrix.os == 'ubuntu-latest' && 'tar.gz' || 'zip' }}
+          path: samqtt-${{ matrix.rid }}.${{ matrix.os == 'ubuntu-latest' && 'tar.gz' || 'zip' }}
 
   release:
     if: startsWith(github.ref, 'refs/tags/v')
     needs: build
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/download-artifact@v4
-      with:
-        path: ./artifacts
+      - uses: actions/download-artifact@v4
+        with:
+          path: ./artifacts
 
-    - name: Create GitHub Release
-      uses: softprops/action-gh-release@v1
-      with:
-        tag_name: ${{ github.ref_name }}
-        name: Release ${{ github.ref_name }}
-        files: |
-          artifacts/samqtt-ubuntu-latest.tar.gz/samqtt-ubuntu-latest.tar.gz
-          artifacts/samqtt-windows-latest.zip/samqtt-windows-latest.zip
-          artifacts/SamqttSetup.exe/SamqttSetup.exe
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v1
+        with:
+          tag_name: ${{ github.ref_name }}
+          name: Release ${{ github.ref_name }}
+          files: |
+            artifacts/samqtt-linux-x64.tar.gz/samqtt-linux-x64.tar.gz
+            artifacts/samqtt-linux-arm.tar.gz/samqtt-linux-arm.tar.gz
+            artifacts/samqtt-linux-arm64.tar.gz/samqtt-linux-arm64.tar.gz
+            artifacts/samqtt-win-x64.zip/samqtt-win-x64.zip
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
