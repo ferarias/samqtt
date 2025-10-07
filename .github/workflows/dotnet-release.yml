@@ -69,14 +69,16 @@ jobs:
       - name: Install Inno Setup on Windows
         if: matrix.os == 'windows-latest' && startsWith(github.ref, 'refs/tags/v')
         run: |
-          Invoke-WebRequest -Uri https://jrsoftware.org/download.php/is.exe -OutFile is.exe
-          Start-Process -FilePath is.exe -ArgumentList "/VERYSILENT" -Wait
+             $innoSetupInstaller = "$env:RUNNER_TEMP\innosetup.exe"
+             $innoSetupDir = "$env:RUNNER_TEMP\InnoSetup"
+             Invoke-WebRequest -Uri "https://jrsoftware.org/download.php/is.exe" -OutFile $innoSetupInstaller
+             Start-Process -FilePath $innoSetupInstaller -ArgumentList "/VERYSILENT", "/NORESTART", "/SP-", "/DIR=$innoSetupDir" -Wait
+             Write-Host "Inno Setup installed to $innoSetupDir"
 
       - name: Find ISCC.exe and Build Setup Script
         if: matrix.os == 'windows-latest' && startsWith(github.ref, 'refs/tags/v')
         run: |
-          $innoPath = Get-ChildItem -Path "C:\Program Files*" -Recurse -Filter ISCC.exe | Select-Object -First 1 -ExpandProperty FullName
-          & $innoPath setup\SamqttInstaller.iss /DMyAppVersion=${{ github.ref_name }}
+          & "$env:RUNNER_TEMP\InnoSetup\ISCC.exe" setup\SamqttInstaller.iss /DMyAppVersion=${{ github.ref_name }}
 
       - name: Upload artifacts (only on tag)
         if: startsWith(github.ref, 'refs/tags/v')
