@@ -75,7 +75,7 @@ jobs:
       - name: Build Setup Script
         if: matrix.os == 'windows-latest' && startsWith(github.ref, 'refs/tags/v')
         run: |
-          & 'C:\Program Files\Inno Setup 6\ISCC.exe' setup\SamqttInstaller.iss /DMyAppVersion=${{ github.ref_name }}
+          & 'C:\Program Files\Inno Setup 6 (x86)\ISCC.exe' setup\SamqttInstaller.iss /DMyAppVersion=${{ github.ref_name }}
 
       - name: Upload artifacts (only on tag)
         if: startsWith(github.ref, 'refs/tags/v')
