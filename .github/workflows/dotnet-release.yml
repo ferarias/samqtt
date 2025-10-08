@@ -86,7 +86,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: SamqttSetup-${{ matrix.rid }}.exe
-          path: publish/setup/SamqttSetup--${{ matrix.rid }}.exe
+          path: SamqttSetup-${{ matrix.rid }}.exe
 
   release:
     if: startsWith(github.ref, 'refs/tags/v')
