@@ -48,7 +48,16 @@ jobs:
 
       - name: Publish (only on tag)
         if: startsWith(github.ref, 'refs/tags/v')
-        run: dotnet publish src/Samqtt/Samqtt.csproj --configuration Release --framework ${{ matrix.framework }} --runtime ${{ matrix.rid }} --self-contained --output publish/${{ matrix.rid }}
+        run: |
+             dotnet publish src/Samqtt/Samqtt.csproj 
+             --configuration Release 
+             --framework ${{ matrix.framework }} 
+             --runtime ${{ matrix.rid }} 
+             --self-contained 
+             -p:PublishSingleFile=true 
+             -p:DebugType=None 
+             -p:PublishTrimmed=true
+             --output publish/${{ matrix.rid }}
 
       - name: Linux tar package
         if: matrix.os == 'ubuntu-latest' && startsWith(github.ref, 'refs/tags/v')
