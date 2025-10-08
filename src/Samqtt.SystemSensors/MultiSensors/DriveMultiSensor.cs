@@ -16,8 +16,7 @@
                             // Windows drives
                             di.Name.EndsWith(":\\") ||
                             // Linux/WSL mounted drives
-                            di.Name.StartsWith("/mnt/") ||
-                            di.Name.StartsWith("/media/")
+                            di.Name.StartsWith('/') 
                         ))
             .Select(di => di.Name.Replace(":\\", ""));
         }
