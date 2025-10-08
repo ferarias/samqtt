@@ -5,7 +5,7 @@ After=network.target
 [Service]
 Type=simple
 WorkingDirectory=/opt/samqtt
-ExecStart=/usr/bin/dotnet /opt/samqtt/samqtt.dll
+ExecStart=/opt/samqtt/samqtt
 Restart=on-failure
 RestartSec=5
 User=samqtt
