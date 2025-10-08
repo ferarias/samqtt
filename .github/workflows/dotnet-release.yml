@@ -56,7 +56,6 @@ jobs:
              --self-contained 
              -p:PublishSingleFile=true 
              -p:DebugType=None 
-             -p:PublishTrimmed=true
              --output publish/${{ matrix.rid }}
 
       - name: Linux tar package
