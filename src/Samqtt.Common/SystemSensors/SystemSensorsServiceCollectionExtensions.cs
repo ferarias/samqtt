@@ -44,15 +44,14 @@ namespace Samqtt.SystemSensors
         {
             Type type = sensor.GetType();
             var sensorBaseName = type.Name.Replace("MultiSensor", string.Empty);
+            var sensorTypes = type.Assembly
+                .GetTypes()
+                .Where(t => t.IsClass && !t.IsAbstract &&
+                    typeof(ISystemSensor).IsAssignableFrom(t) &&
+                    t.Name.StartsWith(sensorBaseName, StringComparison.OrdinalIgnoreCase));
 
             foreach (var id in sensor.ChildIdentifiers)
             {
-                var sensorTypes = type.Assembly
-                    .GetTypes()
-                    .Where(t => t.IsClass && !t.IsAbstract &&
-                        typeof(ISystemSensor).IsAssignableFrom(t) &&
-                        t.Name.StartsWith(sensorBaseName, StringComparison.OrdinalIgnoreCase));
-
                 foreach (var sensorType in sensorTypes)
                 {
                     var key = $"{sensorType.Name}_{id}";
