@@ -19,4 +19,5 @@
 	<ItemGroup>
 		<ProjectReference Include="..\Samqtt.Common\Samqtt.Common.csproj" />
 	</ItemGroup>
+
 </Project>

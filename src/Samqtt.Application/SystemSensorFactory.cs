@@ -136,7 +136,7 @@ namespace Samqtt.Application
             var sm = new SystemSensorMetadata
             {
                 Key = sensorName,
-                Name = sensorType.Name.Replace("Sensor", string.Empty),
+                Name = sensorType.Name.Replace("Sensor", instanceId == null ? "" : $" {instanceId}"),
                 UniqueId = topicProvider.GetUniqueId(sensorName),
                 StateTopic = topicProvider.GetSensorStateTopic(sensorName),
                 InstanceId = instanceId,
