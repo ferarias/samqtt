@@ -71,7 +71,7 @@ jobs:
              Invoke-WebRequest -Uri "https://jrsoftware.org/download.php/is.exe" -OutFile $innoSetupInstaller
              Start-Process -FilePath $innoSetupInstaller -ArgumentList "/VERYSILENT", "/NORESTART", "/SP-", "/DIR=$innoSetupDir" -Wait
              Write-Host "Inno Setup installed to $innoSetupDir"
-             & "$env:RUNNER_TEMP\InnoSetup\ISCC.exe" setup\windows\SamqttInstaller.iss /DMyAppVersion=${{ github.ref_name }} /O$env:RUNNER_TEMP /FSamqttSetup-${{ matrix.rid }}.exe
+             & "$env:RUNNER_TEMP\InnoSetup\ISCC.exe" setup\windows\SamqttInstaller.iss /DMyAppVersion=${{ github.ref_name }} /O$env:RUNNER_TEMP /FSamqttSetup-${{ matrix.rid }}
 
       - name: Upload artifacts compressed package
         if: startsWith(github.ref, 'refs/tags/v')
