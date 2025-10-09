@@ -45,7 +45,7 @@ This document provides instructions on how to set up your development environmen
     *   **For the generic .NET version:**
 
         ```bash
-        dotnet run --project src\Samqtt\Samqtt.csproj --framework net8.0
+        dotnet run --project src/Samqtt/Samqtt.csproj --framework net8.0
         ```
 
 ### Using Visual Studio 2022
