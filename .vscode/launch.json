@@ -1,0 +1,28 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": ".NET Core Launch",
+            "type": "coreclr",
+            "request": "launch",
+            "program": "${workspaceFolder}/src/Samqtt/bin/Debug/net8.0/Samqtt.dll",
+            "args": [],
+            "cwd": "${workspaceFolder}/src/Samqtt",
+            "stopAtEntry": false,
+            "console": "internalConsole"
+        },
+        {
+            "name": ".NET Core Launch (Windows-specific)",
+            "type": "coreclr",
+            "request": "launch",
+            "program": "${workspaceFolder}/src/Samqtt/bin/Debug/net8.0/Samqtt.dll",
+            "args": [],
+            "windows": {
+                "program": "${workspaceFolder}/src/Samqtt/bin/Debug/net8.0-windows8.0/Samqtt.dll"
+            },
+            "cwd": "${workspaceFolder}/src/Samqtt",
+            "stopAtEntry": false,
+            "console": "internalConsole"
+        }
+    ]
+}

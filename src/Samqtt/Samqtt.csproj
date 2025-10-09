@@ -2,22 +2,14 @@
 
     <PropertyGroup>
         <TargetFrameworks>net8.0;net8.0-windows8.0</TargetFrameworks>
-        <RuntimeIdentifiers>win-x64;linux-x64</RuntimeIdentifiers>
-        <PlatformTarget>AnyCPU</PlatformTarget>
         <Nullable>enable</Nullable>
         <ImplicitUsings>enable</ImplicitUsings>
         <OutputType>exe</OutputType>
         <Configurations>Debug;Release</Configurations>
-    </PropertyGroup>
-
-    <PropertyGroup Condition="'$(TargetFramework)'=='net8.0'">
-        <RuntimeIdentifier>linux-x64</RuntimeIdentifier>
-        <AssemblyName>samqtt</AssemblyName>
+        <AssemblyName>Samqtt</AssemblyName>
     </PropertyGroup>
 
     <PropertyGroup Condition="'$(TargetFramework)'=='net8.0-windows8.0'">
-        <RuntimeIdentifier>win-x64</RuntimeIdentifier>
-        <AssemblyName>Samqtt</AssemblyName>
         <PublishSingleFile Condition="'$(Configuration.StartsWith(`Release`))'">true</PublishSingleFile>
     </PropertyGroup>
 
