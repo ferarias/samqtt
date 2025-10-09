@@ -73,8 +73,8 @@ namespace Samqtt.Broker.MQTTNet
         public async Task<bool> SubscribeAsync(SystemActionMetadata metadata, Func<string, CancellationToken, Task<object?>> handler, CancellationToken cancellationToken = default)
         {
             var commandTopic = metadata.CommandTopic;
-            var stateTopic = metadata.StateTopic;
-            var jsonAttrTopic = metadata.JsonAttributesTopic;
+            string stateTopic = metadata.StateTopic!;
+            string jsonAttrTopic = metadata.JsonAttributesTopic!;
             do
             {
                 try
