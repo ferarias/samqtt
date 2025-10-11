@@ -21,31 +21,32 @@ In both Linux and Windows there's an installer available. Keep these values at h
 
 ### Linux
 
-1. Get the latest Linux version from the [releases](https://github.com/ferarias/samqtt/releases/) section, e.g.:
-```
-wget https://github.com/ferarias/samqtt/releases/download/v1.0.0-beta3.7/samqtt-linux-arm.tar.gz
+#### Automated install
+
+```bash
+bash <(curl -s https://raw.githubusercontent.com/ferarias/samqtt/master/setup/install-latest-linux.sh)
 ```
 
-1. Extract the package, e.g.:
-```
-tar xvfz samqtt-linux-arm.tar.gz
-```
+#### Manual install
 
-1. Run the installer and follow the instructions  
+Get the latest appropriate Linux version from the [releases](https://github.com/ferarias/samqtt/releases/) section.
+
+Example for Linux (X64)
 ```
+wget https://github.com/ferarias/samqtt/releases/latest/download/samqtt-linux-x64.tar.gz
+tar xvfz samqtt-linux-x64.tar.gz
 cd samqtt
-chmod +x uninstall.sh
+chmod +x install.sh
 ./install.sh
 ```
 
-1. You can further customize settings in `/etc/mqtt/samqtt.appsettings.json`
+You can further customize settings in `/etc/mqtt/samqtt.appsettings.json`
 
-1. To uninstall:
+#### Uninstall
 ```
-cd samqtt
-chmod +x uninstall.sh`
-./uninstall.sh
+/opt/samqtt/uninstall.sh
 ```
+
 ## Architecture
 
 [![Architecture](./docs/architecture-simple.svg)](./docs/architecture.excalidraw)

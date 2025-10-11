@@ -51,10 +51,16 @@ Adjust the output path as needed.
    [Service]
    Type=simple
    WorkingDirectory=/opt/samqtt
-   ExecStart=/usr/bin/dotnet /opt/samqtt/samqtt.dll
+   ExecStart=/opt/samqtt/samqtt
    Restart=on-failure
+   RestartSec=5
    User=samqtt
    Environment=ASPNETCORE_ENVIRONMENT=Production
+   EnvironmentFile=/etc/samqtt/env
+
+   # Redirect logs to journald
+   StandardOutput=journal
+   StandardError=journal
 
    [Install]
    WantedBy=multi-user.target
@@ -79,6 +85,12 @@ Adjust the output path as needed.
 
    ```bash
    sudo systemctl status samqtt
+   ```
+
+6. **View logs**
+
+   ```bash
+   journalctl -u samqtt -f
    ```
 
 `samqtt` will now run as a background service and start automatically on boot.
