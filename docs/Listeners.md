@@ -15,24 +15,50 @@ Published to `samqtt/{hostname}/monitor` after setting
 Tries to put system into different power states
 
 **Hibernate**
-Tries to put system into a hibernation power mode
+Tries to put system into a hibernation power mode.
 
-Topic: `samqtt/{hostname}/hibernate`
+Command topic: `samqtt/system_action/{hostname}/hibernate/request`
+
+**Platforms:** Windows (via `WindowsPowerManagement`), Linux (via `systemctl hibernate`)
 
 **Suspend**
-Tries to put system into a suspended power mode
+Tries to put system into a suspended power mode.
 
-Topic: `samqtt/{hostname}/suspend `
+Command topic: `samqtt/system_action/{hostname}/suspend/request`
+
+**Platforms:** Windows (via `WindowsPowerManagement`), Linux (via `systemctl suspend`)
 
 **Shutdown**
-Shutdown immediately the computer
+Shuts down the computer immediately.
 
-Topic: `samqtt/{hostname}/shutdown`
+Command topic: `samqtt/system_action/{hostname}/shutdown/request`
+
+**Platforms:** Windows (via `WindowsPowerManagement` with optional delay in seconds as payload), Linux (via `systemctl poweroff`)
 
 **Reboot**
-Reboot immediatly the computer
+Reboots the computer immediately.
 
-Topic: `samqtt/{hostname}/reboot`
+Command topic: `samqtt/system_action/{hostname}/reboot/request`
+
+**Platforms:** Windows (via `WindowsPowerManagement` with optional delay in seconds as payload), Linux (via `systemctl reboot`)
+
+### SendNotification action
+
+Sends a desktop notification on the Linux computer using `notify-send`.
+
+**Command topic:** `samqtt/system_action/{hostname}/sendnotification/request`
+**Payload:** JSON object with notification fields
+
+**Platforms:** Linux
+
+Example payload:
+```json
+{ "Summary": "Hello from Home Assistant", "Body": "Motion detected in the garden", "Icon": "dialog-information" }
+```
+
+`Summary` is required. `Body` and `Icon` are optional. `Icon` can be a theme icon name (e.g. `dialog-information`, `dialog-warning`) or an absolute path to an image file.
+
+---
 
 ### Send Message
 

@@ -52,19 +52,19 @@
         },
         "Actions": {
             "Hibernate": {
-                "Enabled": false
+                "Enabled": true
             },
             "Reboot": {
-                "Enabled": false
+                "Enabled": true
             },
             "Shutdown": {
-                "Enabled": false
+                "Enabled": true
             },
             "Suspend": {
-                "Enabled": false
+                "Enabled": true
             },
             "SendNotification": {
-                "Enabled": false
+                "Enabled": true
             },
             "StartProcess": {
                 "Enabled": true

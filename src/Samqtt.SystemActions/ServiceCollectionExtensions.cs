@@ -15,11 +15,24 @@ namespace Samqtt.SystemActions
     /// </summary>
     public static class ServiceCollectionExtensions
     {
-        public static IServiceCollection AddSystemActions(this IServiceCollection services) =>
+        public static IServiceCollection AddSystemActions(this IServiceCollection services)
+        {
             services
                 .AddSystemAction<GetProcessAction>()
                 .AddSystemAction<GetProcessesAction>()
                 .AddSystemAction<KillProcessAction>()
                 .AddSystemAction<StartProcessAction>();
+
+            if (OperatingSystem.IsLinux())
+            {
+                services.AddSystemAction<SuspendAction>();
+                services.AddSystemAction<ShutdownAction>();
+                services.AddSystemAction<RebootAction>();
+                services.AddSystemAction<HibernateAction>();
+                services.AddSystemAction<SendNotificationAction>();
+            }
+
+            return services;
+        }
     }
 }

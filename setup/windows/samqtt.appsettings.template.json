@@ -22,7 +22,7 @@
                 "enabled": true
             },
             "CpuProcessorTime": {
-                "enabled": true
+                "enabled": false
             },
             "FreeMemory": {
                 "enabled": true
@@ -64,7 +64,7 @@
                 "Enabled": true
             },
             "SendNotification": {
-        "Enabled": true
+                "Enabled": false
             },
             "StartProcess": {
                 "Enabled": true
