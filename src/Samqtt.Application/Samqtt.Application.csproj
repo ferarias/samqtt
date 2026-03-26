@@ -11,7 +11,7 @@
   
   <ItemGroup>
     <ProjectReference Include="..\Samqtt.Common\Samqtt.Common.csproj" />
-    <ProjectReference Include="..\Samqtt.Broker.Mqtt2Net\Samqtt.Broker.MQTTNet.csproj" />
+    <ProjectReference Include="..\Samqtt.Broker.Tcp\Samqtt.Broker.Tcp.csproj" />
     <ProjectReference Include="..\Samqtt.HomeAssistant\Samqtt.HomeAssistant.csproj" />
   </ItemGroup>
 
