@@ -67,7 +67,7 @@ namespace Samqtt.Application
                 }
 
                 var multisensorInstance = allMultiSensors
-                    .FirstOrDefault(a => a.GetType().Name.Equals(multisensorName + "MultiSensor", StringComparison.OrdinalIgnoreCase));
+                    .FirstOrDefault(a => a.ConfigKey.Equals(multisensorName, StringComparison.OrdinalIgnoreCase));
 
                 if (multisensorInstance == null)
                 {

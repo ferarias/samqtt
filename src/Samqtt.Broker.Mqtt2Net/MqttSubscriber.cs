@@ -6,6 +6,7 @@ using MQTTnet.Protocol;
 using Samqtt.Options;
 using Samqtt.SystemActions;
 using Samqtt.SystemSensors;
+using System.Text.Json;
 
 namespace Samqtt.Broker.MQTTNet
 {
@@ -50,15 +51,24 @@ namespace Samqtt.Broker.MQTTNet
 
                     if (result is IEnumerable<object> enumerable)
                     {
+                        // items are formatted strings from primitives — fallback branch is dead.
+#pragma warning disable IL2026, IL3050
                         var items = enumerable.Select(item => sensorValueFormatter.Format(item)).ToList();
+#pragma warning restore IL2026, IL3050
                         var count = items.Count;
                         await publisher.PublishActionStateValue(stateTopic, $"Returned {count} items", stoppingToken);
-                        var o = new { count, items };
-                        await publisher.PublishActionStateValue(jsonAttrTopic, sensorValueFormatter.Format(o), stoppingToken);
+                        var resultPayload = new ActionResultPayload(count, items);
+                        await publisher.PublishActionStateValue(
+                            jsonAttrTopic,
+                            JsonSerializer.Serialize(resultPayload, SamqttBrokerJsonContext.Default.ActionResultPayload),
+                            stoppingToken);
                     }
                     else
                     {
+                        // result is a primitive action return value — fallback branch is dead.
+#pragma warning disable IL2026, IL3050
                         var v = sensorValueFormatter.Format(result);
+#pragma warning restore IL2026, IL3050
                         await publisher.PublishActionStateValue(stateTopic, v, stoppingToken);
                         await publisher.PublishActionStateValue(jsonAttrTopic, v, stoppingToken);
                     }

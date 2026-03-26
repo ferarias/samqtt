@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+﻿using System.Diagnostics.CodeAnalysis;
+using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
 
@@ -8,10 +9,15 @@ namespace Samqtt.Options
     {
         public static IServiceCollection AddSamqttOptions(this IServiceCollection services)
         {
+            // ValidateDataAnnotations uses reflection to check [Required] attributes.
+            // SamqttOptions and nested types are simple POCOs with no dynamic members —
+            // trimming will not remove any properties actually inspected at runtime.
+#pragma warning disable IL2026
             services
             .AddOptionsWithValidateOnStart<SamqttOptions>()
                 .BindConfiguration(SamqttOptions.SectionName)
                 .ValidateDataAnnotations();
+#pragma warning restore IL2026
 
             services
                 .PostConfigure<SamqttOptions>(o =>

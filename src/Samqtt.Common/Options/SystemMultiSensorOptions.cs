@@ -6,7 +6,7 @@ namespace Samqtt.Options
     {
         public bool Enabled { get; set; } = true;
 
-        public required Dictionary<string, SystemSensorOptions> Sensors { get; set; }
+        public Dictionary<string, SystemSensorOptions> Sensors { get; set; } = [];
 
     }
 }

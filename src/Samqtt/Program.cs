@@ -37,11 +37,16 @@ try
         .AddHostedService<SamqttBackgroundService>();
 
     builder.Services
-        .AddSerilog((services, loggerConfiguration) => loggerConfiguration
-            .ReadFrom.Configuration(builder.Configuration)
-            .ReadFrom.Services(services)
-            .Enrich.FromLogContext()
-            .WriteTo.Console());
+        .AddSerilog((services, loggerConfiguration) =>
+        {
+            loggerConfiguration
+#if !AOT_BUILD
+                .ReadFrom.Configuration(builder.Configuration)
+                .ReadFrom.Services(services)
+#endif
+                .Enrich.FromLogContext()
+                .WriteTo.Console();
+        });
 
     builder.Services
         .AddSamqttOptions()
