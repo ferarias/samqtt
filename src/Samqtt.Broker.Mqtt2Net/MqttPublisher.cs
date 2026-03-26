@@ -11,15 +11,19 @@ namespace Samqtt.Broker.MQTTNet
         private readonly ILogger<MqttPublisher> _logger = logger;
 
 
-        public async Task PublishAsync(string topic, string message, bool retain = false, CancellationToken cancellationToken = default)
+        public async Task PublishAsync(string topic, string message, bool retain = false, bool atLeastOnce = false, CancellationToken cancellationToken = default)
         {
             if (_client.IsConnected)
             {
+                var qos = atLeastOnce
+                    ? MqttQualityOfServiceLevel.AtLeastOnce
+                    : MqttQualityOfServiceLevel.AtMostOnce;
+
                 var mqttMessage = new MqttApplicationMessageBuilder()
                     .WithTopic(topic)
                     .WithPayload(Encoding.UTF8.GetBytes(message))
                     .WithRetainFlag(retain)
-                    .WithQualityOfServiceLevel(MqttQualityOfServiceLevel.AtLeastOnce)
+                    .WithQualityOfServiceLevel(qos)
                 .Build();
 
                 await _client.PublishAsync(mqttMessage, cancellationToken);

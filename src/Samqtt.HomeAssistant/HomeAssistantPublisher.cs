@@ -31,13 +31,13 @@ namespace Samqtt.HomeAssistant
 
         public async Task PublishOnlineStatus(CancellationToken cancellationToken = default)
         {
-            await mqttPublisher.PublishAsync(topicProvider.StatusTopic, "online", retain: true, cancellationToken);
+            await mqttPublisher.PublishAsync(topicProvider.StatusTopic, "online", retain: true, atLeastOnce: true, cancellationToken);
             logger.LogDebug("Published online status");
         }
 
         public async Task PublishOfflineStatus(CancellationToken cancellationToken = default)
         {
-            await mqttPublisher.PublishAsync(topicProvider.StatusTopic, "offline", retain: true, cancellationToken: cancellationToken);
+            await mqttPublisher.PublishAsync(topicProvider.StatusTopic, "offline", retain: true, atLeastOnce: true, cancellationToken: cancellationToken);
             logger.LogDebug("Published offline status");
         }
 
@@ -102,6 +102,7 @@ namespace Samqtt.HomeAssistant
                 discoveryTopic,
                 JsonSerializer.Serialize(payloadDict, jsonSerializerOptions),
                 retain: true,
+                atLeastOnce: true,
                 cancellationToken: cancellationToken);
 
             logger.LogInformation("Published HA sensor discovery message for {Sensor} in {Topic}", metadata?.Key, discoveryTopic);
@@ -140,6 +141,7 @@ namespace Samqtt.HomeAssistant
                 discoveryTopic,
                 JsonSerializer.Serialize(payloadDict, jsonSerializerOptions),
                 retain: true,
+                atLeastOnce: true,
                 cancellationToken: cancellationToken);
 
             logger.LogInformation("Published HA action discovery message for {Action} in {Topic}", metadata?.Key, discoveryTopic);
