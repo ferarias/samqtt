@@ -52,6 +52,19 @@ namespace Samqtt.SystemSensors
             ISystemMultiSensor sensor,
             Type[] childSensorTypes)
         {
+            // Register each child type once as a non-keyed ISystemSensor.
+            // SystemSensorFactory.GetEnabledMultiSensorChildren() first searches GetServices<ISystemSensor>()
+            // (non-keyed only) to validate that a config key is backed by a known implementation.
+            // Without this, the template check always returns null and the per-drive keyed instances
+            // are never reached.
+            foreach (var sensorType in childSensorTypes)
+            {
+#pragma warning disable IL2072
+                services.AddSingleton(sensorType);
+                services.AddSingleton(typeof(ISystemSensor), sp => sp.GetRequiredService(sensorType));
+#pragma warning restore IL2072
+            }
+
             foreach (var id in sensor.ChildIdentifiers)
             {
                 foreach (var sensorType in childSensorTypes)

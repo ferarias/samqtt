@@ -1,17 +1,17 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
         <TargetFramework>net8.0</TargetFramework>
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="MQTTnet" Version="5.0.1.1416" />
         <PackageReference Include="Microsoft.Extensions.Hosting.Abstractions" Version="8.0.0" />
         <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="8.0.3" />
         <PackageReference Include="Microsoft.Extensions.Options" Version="8.0.1" />
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\Samqtt.Common\Samqtt.Common.csproj" />
+        <ProjectReference Include="..\Samqtt.Common\Samqtt.Common.csproj" />
     </ItemGroup>
+
 </Project>

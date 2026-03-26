@@ -1,5 +1,5 @@
 ﻿using Samqtt.Application;
-using Samqtt.Broker.MQTTNet;
+using Samqtt.Broker.Tcp;
 using Samqtt.HomeAssistant;
 using Samqtt.Options;
 using Samqtt.SystemActions;
@@ -51,7 +51,7 @@ try
     builder.Services
         .AddSamqttOptions()
         .AddSamqttApplication()
-        .AddMqtt2NetBroker()
+        .AddTcpMqttBroker()
         .AddHomeAssistant()
         .AddSystemActions()
         .AddSystemSensors();
