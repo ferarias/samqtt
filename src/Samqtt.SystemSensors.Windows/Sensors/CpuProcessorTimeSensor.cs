@@ -4,29 +4,18 @@ using System.Diagnostics;
 namespace Samqtt.SystemSensors.Windows.Sensors
 {
     [HomeAssistantSensor(unitOfMeasurement: "%", stateClass: "measurement")]
-    public class CpuProcessorTimeSensor(ILogger<CpuProcessorTimeSensor> logger) : SystemSensor<double>
+    public class CpuProcessorTimeSensor(ILogger<CpuProcessorTimeSensor> logger) : SystemSensor<double>, IDisposable
     {
+        private readonly PerformanceCounter _cpuCounter = new("Processor", "% Processor Time", "_Total");
+
         protected override async Task<double> CollectInternalAsync()
-
         {
-            var cpuUsage = await GetCpuUsageAsync();
-            logger.LogDebug("Collect {Key}: {Value}%", Metadata.Key, cpuUsage);
-            return cpuUsage;
-
+            var usage = await Task.Run(() => _cpuCounter.NextValue());
+            var rounded = Math.Round(usage, 1);
+            logger.LogDebug("Collect {Key}: {Value}%", Metadata.Key, rounded);
+            return rounded;
         }
 
-        private static async Task<double> GetCpuUsageAsync(int delayMilliseconds = 500)
-        {
-            using var cpuCounter = new PerformanceCounter("Processor", "% Processor Time", "_Total");
-
-            // The first call always returns 0, so we discard it
-            _ = cpuCounter.NextValue();
-
-            await Task.Delay(delayMilliseconds);
-
-            var usage = cpuCounter.NextValue();
-            return Math.Round(usage, 1); // 1 decimal precision
-        }
-
+        public void Dispose() => _cpuCounter.Dispose();
     }
 }
