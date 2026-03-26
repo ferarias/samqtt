@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.Logging;
+﻿using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using MQTTnet;
 using MQTTnet.Protocol;
@@ -23,13 +24,16 @@ namespace Samqtt.Broker.MQTTNet
             IOptions<SamqttOptions> options,
             ISystemActionFactory actionFactory,
             IMessagePublisher publisher,
-                ISystemSensorValueFormatter sensorValueFormatter,
+            ISystemSensorValueFormatter sensorValueFormatter,
+            IHostApplicationLifetime appLifetime,
             ILogger<MqttSubscriber> logger)
         {
             this.actionFactory = actionFactory;
             this.logger = logger;
             _client = client;
             _options = options.Value;
+
+            var stoppingToken = appLifetime.ApplicationStopping;
 
             // Define what happens when a commandPayload is received
             _client.ApplicationMessageReceivedAsync += async (e) =>
@@ -40,25 +44,23 @@ namespace Samqtt.Broker.MQTTNet
                     var commandTopic = e.ApplicationMessage.Topic;
                     var commandPayload = e.ApplicationMessage.ConvertPayloadToString();
 
-                    var result = await _actions[commandTopic].Invoke(commandPayload, CancellationToken.None);
+                    var result = await _actions[commandTopic].Invoke(commandPayload, stoppingToken);
                     var stateTopic = _returnTopics[commandTopic].StateTopic;
                     var jsonAttrTopic = _returnTopics[commandTopic].JsonAttributesTopic;
 
                     if (result is IEnumerable<object> enumerable)
                     {
-                        await publisher.PublishActionStateValue(stateTopic, $"Returned {enumerable.Count()} items", CancellationToken.None);
-                        var o = new
-                        {
-                            count = enumerable.Count(),
-                            items = enumerable.Select(item => sensorValueFormatter.Format(item)).ToList()
-                        };
-                        await publisher.PublishActionStateValue(jsonAttrTopic, sensorValueFormatter.Format(o), CancellationToken.None);
+                        var items = enumerable.Select(item => sensorValueFormatter.Format(item)).ToList();
+                        var count = items.Count;
+                        await publisher.PublishActionStateValue(stateTopic, $"Returned {count} items", stoppingToken);
+                        var o = new { count, items };
+                        await publisher.PublishActionStateValue(jsonAttrTopic, sensorValueFormatter.Format(o), stoppingToken);
                     }
                     else
                     {
                         var v = sensorValueFormatter.Format(result);
-                        await publisher.PublishActionStateValue(stateTopic, v, CancellationToken.None);
-                        await publisher.PublishActionStateValue(jsonAttrTopic, v, CancellationToken.None);
+                        await publisher.PublishActionStateValue(stateTopic, v, stoppingToken);
+                        await publisher.PublishActionStateValue(jsonAttrTopic, v, stoppingToken);
                     }
 
                     
