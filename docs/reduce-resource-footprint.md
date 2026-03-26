@@ -113,7 +113,7 @@ reason about.
 
 ---
 
-#### 2.3 Pool MQTT payload buffers
+#### 2.3 Pool MQTT payload buffers ✅ DONE
 
 **File:** `src/Samqtt.Broker.Mqtt2Net/MqttPublisher.cs`
 
