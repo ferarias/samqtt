@@ -1,4 +1,4 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 
@@ -27,36 +27,30 @@ namespace Samqtt.Application
                     continue;
                 }
 
-                var actionInstance = allActions.FirstOrDefault(a => a.GetType().Name.Equals(actionName + "Action", StringComparison.OrdinalIgnoreCase));
+                var actionInstance = allActions.FirstOrDefault(a =>
+                    a.ConfigKey.Equals(actionName, StringComparison.OrdinalIgnoreCase));
                 if (actionInstance == null)
                 {
-                    logger.LogWarning("No actionInstance ISystemAction implementation found for key: {Action}", actionName);
+                    logger.LogWarning("No ISystemAction implementation found for key: {Action}", actionName);
                     continue;
                 }
 
-                if (actionInstance is SystemAction<Unit> systemAction)
-                {
-                    actionInstance.Metadata = CreateMetadata(systemAction.GetType(), actionName, false);
-                }
-                else
-                {
-                    actionInstance.Metadata = CreateMetadata(actionInstance.GetType(), actionName, true);
-                }
+                actionInstance.Metadata = CreateMetadata(actionInstance, actionName);
 
                 yield return actionInstance;
             }
         }
 
-        private SystemActionMetadata CreateMetadata(Type actionType, string actionName, bool returnsState) =>
+        private SystemActionMetadata CreateMetadata(ISystemAction action, string actionName) =>
             new()
             {
                 Key = actionName,
-                Name = actionType.Name.Replace("Action", ""),
+                Name = action.GetType().Name.Replace("Action", ""),
                 UniqueId = topicProvider.GetUniqueId(actionName),
                 DiscoveryTopic = topicProvider.GetActionResponseDiscoveryTopic(actionName),
                 CommandTopic = topicProvider.GetActionCommandTopic(actionName),
-                StateTopic = returnsState ? topicProvider.GetActionStateTopic(actionName) : null,
-                JsonAttributesTopic = returnsState ? topicProvider.GetActionJsonAttributesTopic(actionName) : null
+                StateTopic = action.ReturnsState ? topicProvider.GetActionStateTopic(actionName) : null,
+                JsonAttributesTopic = action.ReturnsState ? topicProvider.GetActionJsonAttributesTopic(actionName) : null
             };
     }
 }

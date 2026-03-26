@@ -5,6 +5,14 @@ namespace Samqtt.SystemSensors.MultiSensors.Drive
     [HomeAssistantSensor(unitOfMeasurement: "B", deviceClass: "data_size", stateClass: "measurement")]
     public class DriveFreeSizeSensor(ILogger<DriveFreeSizeSensor> logger) : SystemSensor<long>()
     {
+        public override string ConfigKey => "DriveFreeSize";
+        public override SensorAttributeInfo GetSensorAttributes() => new()
+        {
+            UnitOfMeasurement = "B",
+            DeviceClass = "data_size",
+            StateClass = "measurement",
+        };
+
         protected override Task<long> CollectInternalAsync()
         {
             var driveName = OperatingSystem.IsWindows() 

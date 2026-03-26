@@ -1,4 +1,4 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Samqtt.Common;
@@ -38,15 +38,15 @@ namespace Samqtt.Application
                 }
 
                 var sensorInstance = allSensors.FirstOrDefault(a =>
-                    a.GetType().Name.Equals(sensorName + "Sensor", StringComparison.OrdinalIgnoreCase));
+                    a.ConfigKey.Equals(sensorName, StringComparison.OrdinalIgnoreCase));
                 if (sensorInstance == null)
                 {
-                    logger.LogWarning("No sensorInstance ISystemSensor implementation found for key: {Sensor}", sensorName);
+                    logger.LogWarning("No ISystemSensor implementation found for key: {Sensor}", sensorName);
                     continue;
                 }
 
                 sensorInstance.Metadata = CreateMetadata(
-                    sensorInstance.GetType(),
+                    sensorInstance,
                     SanitizeHelpers.Sanitize(sensorName)
                 );
 
@@ -71,7 +71,7 @@ namespace Samqtt.Application
 
                 if (multisensorInstance == null)
                 {
-                    logger.LogWarning("No multisensorInstance IMultiSystemSensor implementation found for key: {MultiSensor}", multisensorName);
+                    logger.LogWarning("No ISystemMultiSensor implementation found for key: {MultiSensor}", multisensorName);
                     continue;
                 }
 
@@ -94,12 +94,12 @@ namespace Samqtt.Application
                     continue;
                 }
 
-                var childSensorInstance = allSensors
-                    .FirstOrDefault(a => a.GetType().Name.Equals(childSensorName + "Sensor", StringComparison.OrdinalIgnoreCase));
+                var childSensorTemplate = allSensors
+                    .FirstOrDefault(a => a.ConfigKey.Equals(childSensorName, StringComparison.OrdinalIgnoreCase));
 
-                if (childSensorInstance == null)
+                if (childSensorTemplate == null)
                 {
-                    logger.LogWarning("No childSensorInstance ISystemSensor implementation found for key: {Sensor}", childSensorName);
+                    logger.LogWarning("No ISystemSensor implementation found for child key: {Sensor}", childSensorName);
                     continue;
                 }
 
@@ -110,7 +110,7 @@ namespace Samqtt.Application
                     if (sensorInstance is null)
                     {
                         logger.LogWarning(
-                            "DI could not resolve child sensor `{Sensor}` (child sensor of {Parent}). Check registrations.",
+                            "DI could not resolve child sensor `{Sensor}` (child of {Parent}). Check registrations.",
                             childSensorName, multisensorName
                         );
                         continue;
@@ -121,7 +121,7 @@ namespace Samqtt.Application
                         SanitizeHelpers.Sanitize(sensorName));
 
                     sensorInstance.Metadata = CreateMetadata(
-                        sensorInstance.GetType(),
+                        sensorInstance,
                         childTopicName,
                         childId
                     );
@@ -131,31 +131,32 @@ namespace Samqtt.Application
             }
         }
 
-        private SystemSensorMetadata CreateMetadata(Type sensorType, string sensorName, string? instanceId = null)
+        private SystemSensorMetadata CreateMetadata(ISystemSensor sensor, string sensorName, string? instanceId = null)
         {
+            var attrs = sensor.GetSensorAttributes();
+            var displayName = sensor.GetType().Name.Replace("Sensor", instanceId == null ? "" : $" {instanceId}");
+
             var sm = new SystemSensorMetadata
             {
                 Key = sensorName,
-                Name = sensorType.Name.Replace("Sensor", instanceId == null ? "" : $" {instanceId}"),
+                Name = displayName,
                 UniqueId = topicProvider.GetUniqueId(sensorName),
                 StateTopic = topicProvider.GetSensorStateTopic(sensorName),
                 InstanceId = instanceId,
                 DiscoveryTopic = topicProvider.GetStandardSensorDiscoveryTopic(sensorName),
+                UnitOfMeasurement = attrs.UnitOfMeasurement,
+                DeviceClass = attrs.DeviceClass,
+                StateClass = attrs.StateClass,
             };
-            if (Attribute.GetCustomAttribute(sensorType, typeof(HomeAssistantSensorAttribute)) is HomeAssistantSensorAttribute haAttr)
-            {
-                sm.UnitOfMeasurement = haAttr.UnitOfMeasurement;
-                sm.DeviceClass = haAttr.DeviceClass;
-                sm.StateClass = haAttr.StateClass;
-            }
 
-            if (Attribute.GetCustomAttribute(sensorType, typeof(HomeAssistantBinarySensorAttribute)) is HomeAssistantBinarySensorAttribute habAttr)
+            if (attrs.IsBinary)
             {
                 sm.IsBinary = true;
-                sm.PayloadOn = habAttr.PayloadOn;
-                sm.PayloadOff = habAttr.PayloadOff;
+                sm.PayloadOn = attrs.PayloadOn;
+                sm.PayloadOff = attrs.PayloadOff;
                 sm.DiscoveryTopic = topicProvider.GetBinarySensorDiscoveryTopic(sensorName);
             }
+
             return sm;
         }
     }

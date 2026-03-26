@@ -6,6 +6,14 @@ namespace Samqtt.SystemSensors.Windows.Sensors
     [HomeAssistantSensor(unitOfMeasurement: "B", deviceClass: "memory", stateClass: "measurement")]
     public partial class FreeMemorySensor(ILogger<FreeMemorySensor> logger) : SystemSensor<double>
     {
+        public override string ConfigKey => "FreeMemory";
+        public override SensorAttributeInfo GetSensorAttributes() => new()
+        {
+            UnitOfMeasurement = "B",
+            DeviceClass = "memory",
+            StateClass = "measurement",
+        };
+
         protected override async Task<double> CollectInternalAsync()
 
         {

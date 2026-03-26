@@ -2,6 +2,8 @@
 {
     public class RebootAction : SystemAction<Unit>
     {
+        public override string ConfigKey => "Reboot";
+
         private static readonly int DefaultRebootDelay = 10;
 
         public override Task<Unit> HandleCoreAsync(string payload, CancellationToken cancellationToken)

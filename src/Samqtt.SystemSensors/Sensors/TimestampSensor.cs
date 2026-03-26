@@ -5,6 +5,9 @@ namespace Samqtt.SystemSensors.Sensors
     [HomeAssistantSensor(deviceClass: "timestamp")]
     public class TimestampSensor(ILogger<TimestampSensor> logger) : SystemSensor<DateTime>
     {
+        public override string ConfigKey => "Timestamp";
+        public override SensorAttributeInfo GetSensorAttributes() => new() { DeviceClass = "timestamp" };
+
         protected override Task<DateTime> CollectInternalAsync()
 
         {
