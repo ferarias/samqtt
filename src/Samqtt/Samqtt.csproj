@@ -10,7 +10,7 @@
     </PropertyGroup>
 
     <PropertyGroup Condition="'$(TargetFramework)'=='net8.0-windows8.0'">
-        <PublishSingleFile Condition="'$(Configuration.StartsWith(`Release`))'">true</PublishSingleFile>
+        <PublishSingleFile Condition="'$(Configuration.StartsWith(`Release`))' AND '$(PublishAot)' != 'true'">true</PublishSingleFile>
     </PropertyGroup>
 
     <PropertyGroup Condition="$(Configuration.Contains('AOT'))">
