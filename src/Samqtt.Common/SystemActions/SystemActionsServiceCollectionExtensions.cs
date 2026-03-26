@@ -1,4 +1,3 @@
-﻿using System.Reflection;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Samqtt.SystemActions
@@ -6,19 +5,15 @@ namespace Samqtt.SystemActions
     public static class SystemActionsServiceCollectionExtensions
     {
         /// <summary>
-        /// Add System Actions to the service collection
+        /// Registers a single <see cref="ISystemAction"/> implementation as both its concrete type
+        /// and as <see cref="ISystemAction"/> with singleton lifetime.
         /// </summary>
-        /// <param name="services"></param>
-        /// <param name="assembly"></param>
-        /// <returns></returns>
-        public static IServiceCollection AddSystemActionsFromAssembly(this IServiceCollection services, Assembly assembly) =>
-            services
-            .Scan(scan => scan
-                .FromAssemblyDependencies(assembly)
-                .AddClasses(classes => classes.AssignableTo<ISystemAction>(), publicOnly: true)
-                .AsSelf()
-                .As<ISystemAction>()
-                .WithSingletonLifetime());
-
+        public static IServiceCollection AddSystemAction<TImplementation>(this IServiceCollection services)
+            where TImplementation : class, ISystemAction
+        {
+            services.AddSingleton<TImplementation>();
+            services.AddSingleton<ISystemAction, TImplementation>(sp => sp.GetRequiredService<TImplementation>());
+            return services;
         }
+    }
 }
