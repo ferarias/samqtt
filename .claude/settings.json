@@ -1,0 +1,18 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(npx gitnexus:*)",
+      "Bash(dotnet build:*)",
+      "Bash(xargs head:*)",
+      "Bash(find /e/src/ferarias/samqtt -name *.nuspec -o -name *.nupkg)",
+      "Bash(find /e/src/ferarias/samqtt -path */MQTTnet* -name *.targets)",
+      "Read(//c/Users/fersembo/.nuget/packages/mqttnet/5.0.1.1416/**)",
+      "Read(//e/tmp/**)",
+      "Bash(dotnet-ildasm /c/Users/fersembo/.nuget/packages/mqttnet/5.0.1.1416/lib/net8.0/MQTTnet.dll)",
+      "Read(//c/Users/fersembo/.nuget/packages/mqttnet/**)",
+      "Bash(dotnet test:*)",
+      "WebFetch(domain:docs.github.com)",
+      "WebSearch"
+    ]
+  }
+}
