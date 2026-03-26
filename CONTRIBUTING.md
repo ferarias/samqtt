@@ -182,3 +182,40 @@ This document provides instructions on how to set up your development environmen
 4.  **Start debugging:**
 
     Select the ".NET Core Launch (Linux)" launch configuration from the Debug panel and press F5.
+
+## Adding Sensors and Actions
+
+Sensors and actions are **not auto-discovered**. Registration is explicit to support trimming and
+keep the DI graph auditable.
+
+### Adding a cross-platform sensor
+
+1. Create a class implementing `ISystemSensor` (extend `SystemSensor<T>`) in `Samqtt.SystemSensors/Sensors/`.
+2. Add `.AddSystemSensor<YourSensor>()` to [Samqtt.SystemSensors/ServiceCollectionExtensions.cs](src/Samqtt.SystemSensors/ServiceCollectionExtensions.cs).
+3. Add the sensor key to `appsettings.json` under `"Sensors"`.
+
+### Adding a Windows-only sensor
+
+1. Create the class in `Samqtt.SystemSensors.Windows/Sensors/`.
+2. Add `.AddSystemSensor<YourSensor>()` to [Samqtt.SystemSensors.Windows/ServiceCollectionExtensions.cs](src/Samqtt.SystemSensors.Windows/ServiceCollectionExtensions.cs).
+3. Add the sensor key to `appsettings.json` under `"Sensors"`.
+
+### Adding a cross-platform action
+
+1. Create a class implementing `ISystemAction` in `Samqtt.SystemActions/Actions/`.
+2. Add `.AddSystemAction<YourAction>()` to [Samqtt.SystemActions/ServiceCollectionExtensions.cs](src/Samqtt.SystemActions/ServiceCollectionExtensions.cs).
+3. Add the action key to `appsettings.json` under `"Actions"`.
+
+### Adding a Windows-only action
+
+1. Create the class in `Samqtt.SystemActions.Windows/Actions/`.
+2. Add `.AddSystemAction<YourAction>()` to [Samqtt.SystemActions.Windows/ServiceCollectionExtensions.cs](src/Samqtt.SystemActions.Windows/ServiceCollectionExtensions.cs).
+3. Add the action key to `appsettings.json` under `"Actions"`.
+
+### Adding a multi-sensor (e.g. per-drive metrics)
+
+Multi-sensors enumerate child identifiers at startup (e.g. drive letters). Child sensor types are
+discovered by naming convention: a class whose name starts with the parent's base name
+(e.g. `Drive` from `DriveMultiSensor`) and implements `ISystemSensor` is automatically registered
+as a keyed singleton per identifier. No extra registration step is needed for child types — only
+the parent `ISystemMultiSensor` needs to be registered via `.AddSystemMultiSensor<T>()`.
