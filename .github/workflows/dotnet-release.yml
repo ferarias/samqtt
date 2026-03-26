@@ -49,13 +49,13 @@ jobs:
       - name: Publish (only on tag)
         if: startsWith(github.ref, 'refs/tags/v')
         run: >
-             dotnet publish src/Samqtt/Samqtt.csproj 
-             --configuration Release 
-             --framework ${{ matrix.framework }} 
-             --runtime ${{ matrix.rid }} 
-             --self-contained 
-             -p:PublishSingleFile=true 
-             -p:DebugType=None 
+             dotnet publish src/Samqtt/Samqtt.csproj
+             --configuration Release
+             --framework ${{ matrix.framework }}
+             --runtime ${{ matrix.rid }}
+             --self-contained
+             -p:PublishSingleFile=true
+             -p:DebugType=None
              --output publish/${{ matrix.rid }}
 
       - name: Linux tar package
@@ -88,7 +88,6 @@ jobs:
           name: samqtt-${{ matrix.rid }}.${{ matrix.os == 'ubuntu-latest' && 'tar.gz' || 'zip' }}
           path: samqtt-${{ matrix.rid }}.${{ matrix.os == 'ubuntu-latest' && 'tar.gz' || 'zip' }}
 
-
       - name: Upload installer file
         if: matrix.os == 'windows-latest' && startsWith(github.ref, 'refs/tags/v')
         uses: actions/upload-artifact@v4
@@ -96,9 +95,73 @@ jobs:
           name: SamqttSetup-${{ matrix.rid }}.exe
           path: SamqttSetup-${{ matrix.rid }}.exe
 
+  build-aot:
+    strategy:
+      matrix:
+        include:
+          - os: ubuntu-latest
+            rid: linux-x64
+            framework: net8.0
+            configuration: Release-AOT-Cross
+          - os: ubuntu-24.04-arm
+            rid: linux-arm64
+            framework: net8.0
+            configuration: Release-AOT-Cross
+          - os: windows-latest
+            rid: win-x64
+            framework: net8.0-windows8.0
+            configuration: Release-AOT-Windows
+
+    runs-on: ${{ matrix.os }}
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 8.0.x
+
+      - name: Install native AOT prerequisites (Linux)
+        if: runner.os == 'Linux'
+        run: sudo apt-get install -y clang zlib1g-dev
+
+      - name: Restore dependencies
+        run: dotnet restore src/Samqtt/Samqtt.csproj
+
+      - name: Publish AOT (only on tag)
+        if: startsWith(github.ref, 'refs/tags/v')
+        run: >
+             dotnet publish src/Samqtt/Samqtt.csproj
+             --configuration ${{ matrix.configuration }}
+             --framework ${{ matrix.framework }}
+             --runtime ${{ matrix.rid }}
+             -p:DebugType=None
+             --output publish/aot-${{ matrix.rid }}
+
+      - name: Linux AOT tar package
+        if: runner.os == 'Linux' && startsWith(github.ref, 'refs/tags/v')
+        run: |
+          mkdir -p dist/samqtt
+          cp -r publish/aot-${{ matrix.rid }}/* dist/samqtt/
+          cp -r ./setup/linux/* dist/samqtt/
+          tar -czf samqtt-aot-${{ matrix.rid }}.tar.gz -C dist samqtt
+
+      - name: Windows AOT zip package
+        if: matrix.os == 'windows-latest' && startsWith(github.ref, 'refs/tags/v')
+        run: |
+             Compress-Archive -Path publish\aot-${{ matrix.rid }}\* -DestinationPath samqtt-aot-${{ matrix.rid }}.zip
+
+      - name: Upload AOT artifact
+        if: startsWith(github.ref, 'refs/tags/v')
+        uses: actions/upload-artifact@v4
+        with:
+          name: samqtt-aot-${{ matrix.rid }}.${{ matrix.os == 'ubuntu-latest' && 'tar.gz' || 'zip' }}
+          path: samqtt-aot-${{ matrix.rid }}.${{ matrix.os == 'ubuntu-latest' && 'tar.gz' || 'zip' }}
+
   release:
     if: startsWith(github.ref, 'refs/tags/v')
-    needs: build
+    needs: [build, build-aot]
     runs-on: ubuntu-latest
     steps:
       - uses: actions/download-artifact@v4
@@ -116,5 +179,8 @@ jobs:
             artifacts/samqtt-linux-arm64.tar.gz/samqtt-linux-arm64.tar.gz
             artifacts/samqtt-win-x64.zip/samqtt-win-x64.zip
             artifacts/SamqttSetup-win-x64.exe/SamqttSetup-win-x64.exe
+            artifacts/samqtt-aot-linux-x64.tar.gz/samqtt-aot-linux-x64.tar.gz
+            artifacts/samqtt-aot-linux-arm64.tar.gz/samqtt-aot-linux-arm64.tar.gz
+            artifacts/samqtt-aot-win-x64.zip/samqtt-aot-win-x64.zip
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
