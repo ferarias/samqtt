@@ -101,12 +101,15 @@ jobs:
         include:
           - os: ubuntu-latest
             rid: linux-x64
+            framework: net8.0
             configuration: Release-AOT-Cross
           - os: ubuntu-24.04-arm
             rid: linux-arm64
+            framework: net8.0
             configuration: Release-AOT-Cross
           - os: windows-latest
             rid: win-x64
+            framework: net8.0-windows8.0
             configuration: Release-AOT-Windows
 
     runs-on: ${{ matrix.os }}
@@ -131,12 +134,13 @@ jobs:
         run: >
              dotnet publish src/Samqtt/Samqtt.csproj
              --configuration ${{ matrix.configuration }}
+             --framework ${{ matrix.framework }}
              --runtime ${{ matrix.rid }}
              -p:DebugType=None
              --output publish/aot-${{ matrix.rid }}
 
       - name: Linux AOT tar package
-        if: matrix.os == 'ubuntu-latest' && startsWith(github.ref, 'refs/tags/v')
+        if: runner.os == 'Linux' && startsWith(github.ref, 'refs/tags/v')
         run: |
           mkdir -p dist/samqtt
           cp -r publish/aot-${{ matrix.rid }}/* dist/samqtt/
