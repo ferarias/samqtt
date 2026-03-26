@@ -2,20 +2,8 @@
 
     <PropertyGroup>
         <TargetFrameworks>net8.0;net8.0-windows8.0</TargetFrameworks>
-        <Nullable>enable</Nullable>
-        <ImplicitUsings>enable</ImplicitUsings>
         <OutputType>exe</OutputType>
-        <Configurations>Debug;Release;Release-Windows;Release-Cross;Release-AOT-Windows;Release-AOT-Cross</Configurations>
         <AssemblyName>Samqtt</AssemblyName>
-    </PropertyGroup>
-
-    <PropertyGroup Condition="'$(TargetFramework)'=='net8.0-windows8.0'">
-        <PublishSingleFile Condition="'$(Configuration.StartsWith(`Release`))' AND '$(PublishAot)' != 'true'">true</PublishSingleFile>
-    </PropertyGroup>
-
-    <PropertyGroup Condition="$(Configuration.Contains('AOT'))">
-        <EnableTrimAnalyzer>true</EnableTrimAnalyzer>
-        <EnableAotAnalyzer>true</EnableAotAnalyzer>
     </PropertyGroup>
 
     <ItemGroup>
