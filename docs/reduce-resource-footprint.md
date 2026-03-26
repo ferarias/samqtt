@@ -127,7 +127,7 @@ Pooling eliminates these allocations from the hot path entirely.
 
 ---
 
-#### 2.4 Slim down Serilog sinks
+#### 2.4 Slim down Serilog sinks ✅ DONE
 
 **File:** `src/Samqtt/Program.cs`, `appsettings.json`
 
