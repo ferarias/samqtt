@@ -27,24 +27,24 @@ description: "Skill for the Samqtt.SystemActions.Windows area of samqtt. 9 symbo
 
 Start here when exploring this area:
 
-- **`HibernateSystem`** (Method) — `src/Samqtt.SystemActions.Windows/WindowsPowerManagement.cs:11`
-- **`SuspendSystem`** (Method) — `src/Samqtt.SystemActions.Windows/WindowsPowerManagement.cs:12`
-- **`HandleCoreAsync`** (Method) — `src/Samqtt.SystemActions.Windows/Actions/SuspendAction.cs:4`
-- **`HandleCoreAsync`** (Method) — `src/Samqtt.SystemActions.Windows/Actions/HibernateAction.cs:4`
-- **`Shutdown`** (Method) — `src/Samqtt.SystemActions.Windows/WindowsPowerManagement.cs:14`
+- **`HibernateSystem`** (Method) — `src/Samqtt.SystemActions.Windows/WindowsPowerManagement.cs:14`
+- **`SuspendSystem`** (Method) — `src/Samqtt.SystemActions.Windows/WindowsPowerManagement.cs:15`
+- **`HandleCoreAsync`** (Method) — `src/Samqtt.SystemActions.Windows/Actions/SuspendAction.cs:6`
+- **`HandleCoreAsync`** (Method) — `src/Samqtt.SystemActions.Windows/Actions/HibernateAction.cs:6`
+- **`Shutdown`** (Method) — `src/Samqtt.SystemActions.Windows/WindowsPowerManagement.cs:17`
 
 ## Key Symbols
 
 | Symbol | Type | File | Line |
 |--------|------|------|------|
-| `HibernateSystem` | Method | `src/Samqtt.SystemActions.Windows/WindowsPowerManagement.cs` | 11 |
-| `SuspendSystem` | Method | `src/Samqtt.SystemActions.Windows/WindowsPowerManagement.cs` | 12 |
-| `HandleCoreAsync` | Method | `src/Samqtt.SystemActions.Windows/Actions/SuspendAction.cs` | 4 |
-| `HandleCoreAsync` | Method | `src/Samqtt.SystemActions.Windows/Actions/HibernateAction.cs` | 4 |
-| `Shutdown` | Method | `src/Samqtt.SystemActions.Windows/WindowsPowerManagement.cs` | 14 |
-| `HandleCoreAsync` | Method | `src/Samqtt.SystemActions.Windows/Actions/ShutdownAction.cs` | 6 |
-| `Reboot` | Method | `src/Samqtt.SystemActions.Windows/WindowsPowerManagement.cs` | 18 |
-| `HandleCoreAsync` | Method | `src/Samqtt.SystemActions.Windows/Actions/RebootAction.cs` | 6 |
+| `HibernateSystem` | Method | `src/Samqtt.SystemActions.Windows/WindowsPowerManagement.cs` | 14 |
+| `SuspendSystem` | Method | `src/Samqtt.SystemActions.Windows/WindowsPowerManagement.cs` | 15 |
+| `HandleCoreAsync` | Method | `src/Samqtt.SystemActions.Windows/Actions/SuspendAction.cs` | 6 |
+| `HandleCoreAsync` | Method | `src/Samqtt.SystemActions.Windows/Actions/HibernateAction.cs` | 6 |
+| `Shutdown` | Method | `src/Samqtt.SystemActions.Windows/WindowsPowerManagement.cs` | 17 |
+| `HandleCoreAsync` | Method | `src/Samqtt.SystemActions.Windows/Actions/ShutdownAction.cs` | 8 |
+| `Reboot` | Method | `src/Samqtt.SystemActions.Windows/WindowsPowerManagement.cs` | 21 |
+| `HandleCoreAsync` | Method | `src/Samqtt.SystemActions.Windows/Actions/RebootAction.cs` | 8 |
 | `SetSuspendState` | Method | `src/Samqtt.SystemActions.Windows/WindowsPowerManagement.cs` | 7 |
 
 ## Execution Flows

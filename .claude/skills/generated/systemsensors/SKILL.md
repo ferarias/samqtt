@@ -28,7 +28,7 @@ Start here when exploring this area:
 
 - **`DriveMultiSensor`** (Class) — `src/Samqtt.SystemSensors/MultiSensors/DriveMultiSensor.cs:2`
 - **`SystemMultiSensorBase`** (Class) — `src/Samqtt.Common/SystemSensors/SystemMultiSensorBase.cs:4`
-- **`CollectAsync`** (Method) — `src/Samqtt.Common/SystemSensors/SystemSensor.cs:16`
+- **`CollectAsync`** (Method) — `src/Samqtt.Common/SystemSensors/SystemSensor.cs:31`
 - **`ISystemMultiSensor`** (Interface) — `src/Samqtt.Common/SystemSensors/ISystemMultiSensor.cs:3`
 
 ## Key Symbols
@@ -38,8 +38,8 @@ Start here when exploring this area:
 | `DriveMultiSensor` | Class | `src/Samqtt.SystemSensors/MultiSensors/DriveMultiSensor.cs` | 2 |
 | `SystemMultiSensorBase` | Class | `src/Samqtt.Common/SystemSensors/SystemMultiSensorBase.cs` | 4 |
 | `ISystemMultiSensor` | Interface | `src/Samqtt.Common/SystemSensors/ISystemMultiSensor.cs` | 3 |
-| `CollectAsync` | Method | `src/Samqtt.Common/SystemSensors/SystemSensor.cs` | 16 |
-| `CollectInternalAsync` | Method | `src/Samqtt.Common/SystemSensors/SystemSensor.cs` | 11 |
+| `CollectAsync` | Method | `src/Samqtt.Common/SystemSensors/SystemSensor.cs` | 31 |
+| `CollectInternalAsync` | Method | `src/Samqtt.Common/SystemSensors/SystemSensor.cs` | 26 |
 
 ## How to Explore
 
