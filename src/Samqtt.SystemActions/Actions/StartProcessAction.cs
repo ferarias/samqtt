@@ -9,7 +9,7 @@ namespace Samqtt.SystemActions.Actions
 
         public override async Task<Unit> HandleCoreAsync(string payload, CancellationToken cancellationToken)
         {
-            var commandParameters = JsonSerializer.Deserialize<CommandParameters>(payload);
+            var commandParameters = JsonSerializer.Deserialize(payload, SamqttActionsJsonContext.Default.CommandParameters);
             if (commandParameters != null)
             {
                 ProcessWindowStyle processWindowStyle = commandParameters.WindowStyle switch
@@ -31,16 +31,7 @@ namespace Samqtt.SystemActions.Actions
             return Unit.Default;
         }
     }
-
-    internal class CommandParameters
-    {
-        public required string CommandString { get; set; }
-        public int WindowStyle { get; set; }
-        public string ExecParameters { get; set; } = string.Empty;
-        public string? MonitorId { get; set; }
-    }
 }
-
 
 //{
 //    "CommandString": "notepad.exe",

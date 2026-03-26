@@ -2,6 +2,7 @@
 {
     public class DriveMultiSensor() : SystemMultiSensorBase
     {
+        public override string ConfigKey => "Drive";
         public override IEnumerable<string> ChildIdentifiers => GetDriveLetters();
 
         private static IEnumerable<string> GetDriveLetters()

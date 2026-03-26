@@ -4,7 +4,6 @@ using Samqtt.Options;
 using Samqtt.SystemActions;
 using Samqtt.SystemSensors;
 using System.Text.Json;
-using System.Text.Json.Serialization;
 
 namespace Samqtt.HomeAssistant
 {
@@ -15,19 +14,11 @@ namespace Samqtt.HomeAssistant
         ILogger<HomeAssistantPublisher> logger)
         : IMessagePublisher
     {
-
-        private static readonly JsonSerializerOptions jsonSerializerOptions = new()
-        {
-            DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull
-        };
-
-        private readonly object DeviceInfo = new
-        {
-            identifiers = new[] { $"{Constants.AppId.ToLowerInvariant()}_{options.CurrentValue?.DeviceIdentifier}" },
-            name = $"{Constants.AppId.ToLowerInvariant()} - {options.CurrentValue?.DeviceIdentifier}",
-            manufacturer = "FerArias",
-            model = "Generic Computer",
-        };
+        private readonly DeviceInfoPayload DeviceInfo = new(
+            identifiers: [$"{Constants.AppId.ToLowerInvariant()}_{options.CurrentValue?.DeviceIdentifier}"],
+            name: $"{Constants.AppId.ToLowerInvariant()} - {options.CurrentValue?.DeviceIdentifier}",
+            manufacturer: "FerArias",
+            model: "Generic Computer");
 
         public async Task PublishOnlineStatus(CancellationToken cancellationToken = default)
         {
@@ -77,30 +68,23 @@ namespace Samqtt.HomeAssistant
                 logger.LogWarning("Sensor {Sensor} has no unique ID", metadata.Key);
                 return;
             }
-            // Build the common payload dictionary
-            var payloadDict = new Dictionary<string, object>
-            {
-                ["name"] = metadata.Name,
-                ["state_topic"] = metadata.StateTopic,
-                ["unique_id"] = metadata.UniqueId,
-                ["availability_topic"] = topicProvider.StatusTopic,
-                ["device"] = DeviceInfo
-            };
             string discoveryTopic = metadata.DiscoveryTopic;
 
-            if (!string.IsNullOrWhiteSpace(metadata?.UnitOfMeasurement)) payloadDict["unit_of_measurement"] = metadata.UnitOfMeasurement;
-            if (!string.IsNullOrWhiteSpace(metadata?.StateClass)) payloadDict["state_class"] = metadata.StateClass;
-            if (!string.IsNullOrWhiteSpace(metadata?.DeviceClass)) payloadDict["device_class"] = metadata.DeviceClass;
-
-            if (metadata?.IsBinary == true)
-            {
-                if (!string.IsNullOrWhiteSpace(metadata?.PayloadOn)) payloadDict["payload_on"] = metadata.PayloadOn;
-                if (!string.IsNullOrWhiteSpace(metadata?.PayloadOff)) payloadDict["payload_off"] = metadata.PayloadOff;
-            }
+            var payload = new SensorDiscoveryPayload(
+                name: metadata.Name,
+                state_topic: metadata.StateTopic,
+                unique_id: metadata.UniqueId,
+                availability_topic: topicProvider.StatusTopic,
+                device: DeviceInfo,
+                unit_of_measurement: string.IsNullOrWhiteSpace(metadata?.UnitOfMeasurement) ? null : metadata.UnitOfMeasurement,
+                state_class: string.IsNullOrWhiteSpace(metadata?.StateClass) ? null : metadata.StateClass,
+                device_class: string.IsNullOrWhiteSpace(metadata?.DeviceClass) ? null : metadata.DeviceClass,
+                payload_on: (metadata?.IsBinary == true && !string.IsNullOrWhiteSpace(metadata?.PayloadOn)) ? metadata.PayloadOn : null,
+                payload_off: (metadata?.IsBinary == true && !string.IsNullOrWhiteSpace(metadata?.PayloadOff)) ? metadata.PayloadOff : null);
 
             await mqttPublisher.PublishAsync(
                 discoveryTopic,
-                JsonSerializer.Serialize(payloadDict, jsonSerializerOptions),
+                JsonSerializer.Serialize(payload, SamqttHomeAssistantJsonContext.WithNullIgnore.SensorDiscoveryPayload),
                 retain: true,
                 atLeastOnce: true,
                 cancellationToken: cancellationToken);
@@ -127,19 +111,17 @@ namespace Samqtt.HomeAssistant
                 return;
             }
 
-            var payloadDict = new Dictionary<string, object>
-            {
-                ["name"] = $"{metadata.Name} result",
-                ["state_topic"] = metadata.StateTopic,
-                ["json_attributes_topic"] = metadata.JsonAttributesTopic,
-                ["unique_id"] = metadata.UniqueId,
-                ["device"] = DeviceInfo
-            };
+            var actionPayload = new ActionDiscoveryPayload(
+                name: $"{metadata.Name} result",
+                state_topic: metadata.StateTopic,
+                json_attributes_topic: metadata.JsonAttributesTopic,
+                unique_id: metadata.UniqueId,
+                device: DeviceInfo);
 
             var discoveryTopic = topicProvider.GetActionResponseDiscoveryTopic(metadata.Key);
             await mqttPublisher.PublishAsync(
                 discoveryTopic,
-                JsonSerializer.Serialize(payloadDict, jsonSerializerOptions),
+                JsonSerializer.Serialize(actionPayload, SamqttHomeAssistantJsonContext.WithNullIgnore.ActionDiscoveryPayload),
                 retain: true,
                 atLeastOnce: true,
                 cancellationToken: cancellationToken);

@@ -21,7 +21,11 @@ namespace Samqtt.SystemSensors
                 // Simple sensors
                 .AddSystemSensor<Sensors.TimestampSensor>()
                 .AddSystemSensor<Sensors.NetworkAvailabilitySensor>()
-                // Multi-sensors (registers parent + keyed child instances per drive/mount)
-                .AddSystemMultiSensor<DriveMultiSensor>();
+                // Multi-sensors (registers parent + keyed child instances per drive/mount).
+                // Child types must be listed explicitly — no reflection-based discovery.
+                .AddSystemMultiSensor<DriveMultiSensor>(
+                    typeof(DriveFreeSizeSensor),
+                    typeof(DriveTotalSizeSensor),
+                    typeof(DrivePercentFreeSizeSensor));
     }
 }

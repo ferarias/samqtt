@@ -10,4 +10,19 @@
   <PropertyGroup Condition="'$(Configuration)' == 'Release-Cross'">
     <TargetFramework>net8.0</TargetFramework>
   </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)' == 'Release-AOT-Windows'">
+    <RuntimeIdentifier>win-x64</RuntimeIdentifier>
+    <TargetFramework>net8.0-windows8.0</TargetFramework>
+    <DefineConstants>$(DefineConstants);WINDOWS;AOT_BUILD</DefineConstants>
+    <SelfContained>true</SelfContained>
+    <PublishAot>true</PublishAot>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)' == 'Release-AOT-Cross'">
+    <TargetFramework>net8.0</TargetFramework>
+    <DefineConstants>$(DefineConstants);AOT_BUILD</DefineConstants>
+    <SelfContained>true</SelfContained>
+    <PublishAot>true</PublishAot>
+  </PropertyGroup>
 </Project>

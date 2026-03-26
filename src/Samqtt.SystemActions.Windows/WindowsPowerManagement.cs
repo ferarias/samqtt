@@ -5,9 +5,12 @@ namespace Samqtt.SystemActions.Windows
 {
     public static partial class WindowsPowerManagement
     {
-        [DllImport("Powrprof.dll", SetLastError = true, ExactSpelling = true)]
+        [LibraryImport("Powrprof.dll", SetLastError = true)]
         [return: MarshalAs(UnmanagedType.Bool)]
-        private static extern bool SetSuspendState(bool hibernate, bool forceCritical, bool disableWakeEvent);
+        private static partial bool SetSuspendState(
+            [MarshalAs(UnmanagedType.Bool)] bool hibernate,
+            [MarshalAs(UnmanagedType.Bool)] bool forceCritical,
+            [MarshalAs(UnmanagedType.Bool)] bool disableWakeEvent);
 
         public static bool HibernateSystem() => SetSuspendState(true, false, false);
         public static bool SuspendSystem() => SetSuspendState(false, false, false);
