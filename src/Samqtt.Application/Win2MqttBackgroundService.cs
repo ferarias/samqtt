@@ -55,13 +55,13 @@ namespace Samqtt.Application
         {
             try
             {
-                while (!stoppingToken.IsCancellationRequested)
+                using var timer = new PeriodicTimer(TimeSpan.FromSeconds(options.CurrentValue.TimerInterval));
+                while (await timer.WaitForNextTickAsync(stoppingToken))
                 {
                     // Allow only one thread collecting system information
                     await _semaphore.WaitAsync(stoppingToken);
                     try
                     {
-
                         foreach (var sensor in _activeSensors)
                         {
                             try
@@ -79,7 +79,6 @@ namespace Samqtt.Application
                     {
                         _semaphore.Release();
                     }
-                    await Task.Delay(TimeSpan.FromSeconds(options.CurrentValue.TimerInterval), stoppingToken);
                 }
             }
             catch (OperationCanceledException)

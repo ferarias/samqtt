@@ -15,7 +15,7 @@ namespace Samqtt.Options
         [RegularExpression(@"[^/\\#]+$")]
         public string DeviceIdentifier { get; set; } = Environment.MachineName;
 
-        public int TimerInterval { get; set; } = 5;
+        public int TimerInterval { get; set; } = 30;
 
         [Required]
         public required Dictionary<string, SystemSensorOptions> Sensors { get; set; } = [];
