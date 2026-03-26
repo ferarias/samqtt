@@ -10,15 +10,12 @@ using Samqtt;
 #if WINDOWS
 using Samqtt.SystemActions.Windows;
 using Samqtt.SystemSensors.Windows;
-using Serilog.Events;
 #endif
 
 Log.Logger = new LoggerConfiguration()
     .Enrich.FromLogContext()
+    .MinimumLevel.Warning()
     .WriteTo.Console()
-#if WINDOWS
-    .WriteTo.EventLog(Constants.ServiceName, restrictedToMinimumLevel: LogEventLevel.Information)
-#endif
     .CreateBootstrapLogger();
 
 #if WINDOWS
@@ -44,11 +41,7 @@ try
             .ReadFrom.Configuration(builder.Configuration)
             .ReadFrom.Services(services)
             .Enrich.FromLogContext()
-            .WriteTo.Console()
-#if WINDOWS
-            .WriteTo.EventLog(Constants.ServiceName, restrictedToMinimumLevel: LogEventLevel.Error)
-#endif
-            );
+            .WriteTo.Console());
 
     builder.Services
         .AddSamqttOptions()
