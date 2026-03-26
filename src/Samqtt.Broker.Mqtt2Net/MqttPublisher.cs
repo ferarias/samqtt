@@ -1,4 +1,5 @@
-﻿using System.Text;
+﻿using System.Buffers;
+using System.Text;
 using Microsoft.Extensions.Logging;
 using MQTTnet;
 using MQTTnet.Protocol;
@@ -19,15 +20,25 @@ namespace Samqtt.Broker.MQTTNet
                     ? MqttQualityOfServiceLevel.AtLeastOnce
                     : MqttQualityOfServiceLevel.AtMostOnce;
 
-                var mqttMessage = new MqttApplicationMessageBuilder()
-                    .WithTopic(topic)
-                    .WithPayload(Encoding.UTF8.GetBytes(message))
-                    .WithRetainFlag(retain)
-                    .WithQualityOfServiceLevel(qos)
-                .Build();
+                var maxByteCount = Encoding.UTF8.GetMaxByteCount(message.Length);
+                var buffer = ArrayPool<byte>.Shared.Rent(maxByteCount);
+                try
+                {
+                    var byteCount = Encoding.UTF8.GetBytes(message, buffer);
+                    var mqttMessage = new MqttApplicationMessageBuilder()
+                        .WithTopic(topic)
+                        .WithPayload(buffer[..byteCount])
+                        .WithRetainFlag(retain)
+                        .WithQualityOfServiceLevel(qos)
+                    .Build();
 
-                await _client.PublishAsync(mqttMessage, cancellationToken);
-                _logger.LogTrace("Message published: {Topic} value {Message}", topic, message);
+                    await _client.PublishAsync(mqttMessage, cancellationToken);
+                    _logger.LogTrace("Message published: {Topic} value {Message}", topic, message);
+                }
+                finally
+                {
+                    ArrayPool<byte>.Shared.Return(buffer);
+                }
             }
         }
     }
