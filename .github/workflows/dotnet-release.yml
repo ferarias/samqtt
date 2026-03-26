@@ -102,7 +102,7 @@ jobs:
           - os: ubuntu-latest
             rid: linux-x64
             configuration: Release-AOT-Cross
-          - os: ubuntu-latest
+          - os: ubuntu-24.04-arm64
             rid: linux-arm64
             configuration: Release-AOT-Cross
           - os: windows-latest
@@ -120,12 +120,8 @@ jobs:
           dotnet-version: 8.0.x
 
       - name: Install native AOT prerequisites (Linux)
-        if: matrix.os == 'ubuntu-latest'
+        if: runner.os == 'Linux'
         run: sudo apt-get install -y clang zlib1g-dev
-
-      - name: Install cross-compilation toolchain (linux-arm64 on ubuntu-latest)
-        if: matrix.rid == 'linux-arm64'
-        run: sudo apt-get install -y gcc-aarch64-linux-gnu zlib1g-dev
 
       - name: Restore dependencies
         run: dotnet restore src/Samqtt/Samqtt.csproj
