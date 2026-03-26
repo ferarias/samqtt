@@ -6,6 +6,15 @@ namespace Samqtt.SystemSensors.Sensors
     [HomeAssistantBinarySensor(deviceClass: "connectivity")]
     public class NetworkAvailabilitySensor(ILogger<NetworkAvailabilitySensor> logger) : SystemSensor<bool>
     {
+        public override string ConfigKey => "NetworkAvailability";
+        public override SensorAttributeInfo GetSensorAttributes() => new()
+        {
+            IsBinary = true,
+            DeviceClass = "connectivity",
+            PayloadOn = "on",
+            PayloadOff = "off",
+        };
+
         protected override Task<bool> CollectInternalAsync()
         {
             var value = NetworkInterface.GetIsNetworkAvailable();

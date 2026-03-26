@@ -2,6 +2,8 @@
 {
     public class ShutdownAction : SystemAction<Unit>
     {
+        public override string ConfigKey => "Shutdown";
+
         private static readonly int DefaultShutdownDelay = 10;
 
         public override Task<Unit> HandleCoreAsync(string payload, CancellationToken cancellationToken)

@@ -5,6 +5,8 @@ namespace Samqtt.SystemActions.Actions
 {
     public class StartProcessAction : SystemAction<Unit>
     {
+        public override string ConfigKey => "StartProcess";
+
         public override async Task<Unit> HandleCoreAsync(string payload, CancellationToken cancellationToken)
         {
             var commandParameters = JsonSerializer.Deserialize<CommandParameters>(payload);

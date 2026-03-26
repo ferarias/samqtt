@@ -4,6 +4,8 @@ namespace Samqtt.SystemActions.Actions
 {
     public class GetProcessesAction : SystemAction<ProcessInfo[]>
     {
+        public override string ConfigKey => "GetProcesses";
+
         public override Task<ProcessInfo[]> HandleCoreAsync(string payload, CancellationToken cancellationToken)
         {
             return Task.FromResult(

@@ -99,7 +99,7 @@ picked up automatically. See `CONTRIBUTING.md` for details.
 
 ---
 
-#### 2.2 Remove reflection from `SystemSensorFactory`
+#### 2.2 Remove reflection from `SystemSensorFactory` ✅ DONE
 
 **File:** `src/Samqtt.Application/SystemSensorFactory.cs`
 
