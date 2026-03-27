@@ -22,7 +22,7 @@ WizardSmallImageFile=header.bmp
 Name: "{commonappdata}\SAMQTT"
 
 [Files]
-Source: "..\..\publish\win-x64\*"; DestDir: "{app}"; Flags: ignoreversion recursesubdirs createallsubdirs
+Source: "..\..\publish\aot-win-x64\*"; DestDir: "{app}"; Flags: ignoreversion recursesubdirs createallsubdirs
 Source: ".\README.txt"; DestDir: "{app}"; Flags: isreadme
 Source: ".\samqtt.png"; DestDir: "{app}"; Flags: ignoreversion
 Source: ".\samqtt.ico"; DestDir: "{app}"; Flags: ignoreversion
