@@ -1,11 +1,11 @@
 ---
 name: samqtt-common
-description: "Skill for the Samqtt.Common area of samqtt. 34 symbols across 16 files."
+description: "Skill for the Samqtt.Common area of samqtt. 33 symbols across 18 files."
 ---
 
 # Samqtt.Common
 
-34 symbols | 16 files | Cohesion: 93%
+33 symbols | 18 files | Cohesion: 93%
 
 ## When to Use
 
@@ -18,15 +18,15 @@ description: "Skill for the Samqtt.Common area of samqtt. 34 symbols across 16 f
 | File | Symbols |
 |------|---------|
 | `src/Samqtt.Common/ITopicProvider.cs` | GetSensorStateTopic, GetBinarySensorDiscoveryTopic, GetStandardSensorDiscoveryTopic, GetUniqueId, GetActionStateTopic (+3) |
-| `src/Samqtt.Common/IMessagePublisher.cs` | PublishOnlineStatus, PublishSensorStateDiscoveryMessage, PublishActionStateDiscoveryMessage, PublishOfflineStatus, PublishSensorValue |
+| `src/Samqtt.Common/IMessagePublisher.cs` | PublishOnlineStatus, PublishSensorStateDiscoveryMessage, PublishActionStateDiscoveryMessage, PublishOfflineStatus |
 | `src/Samqtt.Common/IMqttConnectionManager.cs` | ConnectAsync, DisconnectAsync, IMqttConnectionManager |
-| `src/Samqtt.Application/Win2MqttBackgroundService.cs` | StartAsync, StopAsync, ExecuteAsync |
-| `src/Samqtt.Common/SystemSensors/ISystemSensor.cs` | GetSensorAttributes, CollectAsync |
-| `src/Samqtt.Application/SystemActionFactory.cs` | GetEnabledActions, CreateMetadata |
 | `src/Samqtt.Common/IMqttSubscriber.cs` | SubscribeAsync, IMqttSubscriber |
+| `src/Samqtt.Application/Win2MqttBackgroundService.cs` | StartAsync, StopAsync |
+| `src/Samqtt.Application/SystemActionFactory.cs` | GetEnabledActions, CreateMetadata |
 | `src/Samqtt.Common/MetadataBase.cs` | MetadataBase |
 | `src/Samqtt.Application/SystemSensorFactory.cs` | CreateMetadata |
 | `src/Samqtt.Common/SystemSensors/SystemSensorMetadata.cs` | SystemSensorMetadata |
+| `src/Samqtt.Common/SystemSensors/ISystemSensor.cs` | GetSensorAttributes |
 
 ## Entry Points
 
@@ -53,15 +53,15 @@ Start here when exploring this area:
 | `GetSensorStateTopic` | Method | `src/Samqtt.Common/ITopicProvider.cs` | 8 |
 | `GetBinarySensorDiscoveryTopic` | Method | `src/Samqtt.Common/ITopicProvider.cs` | 9 |
 | `GetStandardSensorDiscoveryTopic` | Method | `src/Samqtt.Common/ITopicProvider.cs` | 10 |
+| `StartAsync` | Method | `src/Samqtt.Application/Win2MqttBackgroundService.cs` | 24 |
+| `GetEnabledSensors` | Method | `src/Samqtt.Common/SystemSensors/ISystemSensorFactory.cs` | 6 |
 | `GetUniqueId` | Method | `src/Samqtt.Common/ITopicProvider.cs` | 7 |
 | `GetActionStateTopic` | Method | `src/Samqtt.Common/ITopicProvider.cs` | 13 |
 | `GetActionCommandTopic` | Method | `src/Samqtt.Common/ITopicProvider.cs` | 15 |
 | `GetActionJsonAttributesTopic` | Method | `src/Samqtt.Common/ITopicProvider.cs` | 16 |
 | `GetEnabledActions` | Method | `src/Samqtt.Application/SystemActionFactory.cs` | 17 |
-| `StartAsync` | Method | `src/Samqtt.Application/Win2MqttBackgroundService.cs` | 24 |
-| `StopAsync` | Method | `src/Samqtt.Application/Win2MqttBackgroundService.cs` | 109 |
+| `StopAsync` | Method | `src/Samqtt.Application/Win2MqttBackgroundService.cs` | 107 |
 | `MqttSubscriber` | Class | `src/Samqtt.Broker.Tcp/MqttSubscriber.cs` | 10 |
-| `MqttPublisher` | Class | `src/Samqtt.Broker.Tcp/MqttPublisher.cs` | 6 |
 
 ## Execution Flows
 

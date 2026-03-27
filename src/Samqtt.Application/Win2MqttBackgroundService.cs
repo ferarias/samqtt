@@ -69,11 +69,7 @@ namespace Samqtt.Application
                             try
                             {
                                 var collectedValue = await sensor.CollectAsync();
-                                // Sensor CollectAsync returns primitives (bool, int, long, double, etc.)
-                                // which are all handled by explicit branches in Format — fallback is dead.
-#pragma warning disable IL2026, IL3050
-                                await publisher.PublishSensorValue(sensor.Metadata.StateTopic, sensorValueFormatter.Format(collectedValue), stoppingToken);
-#pragma warning restore IL2026, IL3050
+                                await publisher.PublishSensorValue(sensor.Metadata.StateTopic, sensorValueFormatter.FormatObject(collectedValue), stoppingToken);
                             }
                             catch (Exception ex) when (ex is not OperationCanceledException)
                             {

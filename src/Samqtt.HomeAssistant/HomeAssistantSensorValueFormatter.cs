@@ -13,6 +13,21 @@ namespace Samqtt.HomeAssistant
             WriteIndented = false
         };
 
+        public string FormatObject(object? value) => value switch
+        {
+            null => string.Empty,
+            bool b => b ? "1" : "0",
+            DateTime dt => dt.ToUniversalTime().ToString("O"),
+            DateTimeOffset dto => dto.ToUniversalTime().ToString("O"),
+            double d => d.ToString("0.##", CultureInfo.InvariantCulture),
+            float f => f.ToString("0.##", CultureInfo.InvariantCulture),
+            int i => i.ToString(CultureInfo.InvariantCulture),
+            long l => l.ToString(CultureInfo.InvariantCulture),
+            decimal dec => dec.ToString(CultureInfo.InvariantCulture),
+            string s => s,
+            _ => value.ToString() ?? string.Empty,
+        };
+
         [RequiresDynamicCode("Fallback branch serializes unknown types via reflection. All sensor value types should be handled by explicit branches.")]
         [RequiresUnreferencedCode("Fallback branch serializes unknown types via reflection. All sensor value types should be handled by explicit branches.")]
         public string Format<T>(T? value)

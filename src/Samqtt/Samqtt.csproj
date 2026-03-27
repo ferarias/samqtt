@@ -4,6 +4,13 @@
         <TargetFrameworks>net8.0;net8.0-windows8.0</TargetFrameworks>
         <OutputType>exe</OutputType>
         <AssemblyName>Samqtt</AssemblyName>
+        <IsTrimmable>true</IsTrimmable>
+    </PropertyGroup>
+
+    <!-- Define AOT_BUILD when publishing Native AOT so the #if guard in Program.cs
+         strips ReadFrom.Configuration() which uses assembly-scanning reflection. -->
+    <PropertyGroup Condition="'$(PublishAot)' == 'true'">
+        <DefineConstants>$(DefineConstants);AOT_BUILD</DefineConstants>
     </PropertyGroup>
 
     <ItemGroup>
@@ -12,7 +19,11 @@
         <PackageReference Include="Serilog" Version="4.2.0" />
         <PackageReference Include="Serilog.Extensions.Hosting" Version="8.0.0" />
         <PackageReference Include="Serilog.Sinks.Console" Version="6.0.0" />
-        <PackageReference Include="Serilog.Settings.Configuration" Version="8.0.4" />
+        <!-- Excluded from AOT builds: uses DependencyContext assembly scanning which is
+             incompatible with single-file/AOT. The #if AOT_BUILD guard in Program.cs
+             removes all ReadFrom.Configuration() calls in that mode. -->
+        <PackageReference Include="Serilog.Settings.Configuration" Version="8.0.4"
+                          Condition="'$(PublishAot)' != 'true'" />
         <PackageReference Include="System.Text.Json" Version="8.0.5" />
     </ItemGroup>
 	

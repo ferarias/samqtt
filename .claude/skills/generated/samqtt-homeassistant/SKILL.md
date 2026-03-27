@@ -49,9 +49,9 @@ Start here when exploring this area:
 | `PublishSensorStateDiscoveryMessage` | Method | `src/Samqtt.HomeAssistant/HomeAssistantPublisher.cs` | 58 |
 | `PublishActionStateDiscoveryMessage` | Method | `src/Samqtt.HomeAssistant/HomeAssistantPublisher.cs` | 95 |
 | `GetActionResponseDiscoveryTopic` | Method | `src/Samqtt.Common/ITopicProvider.cs` | 14 |
-| `Format` | Method | `src/Samqtt.HomeAssistant/HomeAssistantSensorValueFormatter.cs` | 15 |
+| `Format` | Method | `src/Samqtt.HomeAssistant/HomeAssistantSensorValueFormatter.cs` | 30 |
 | `PublishAsync` | Method | `src/Samqtt.Common/IMqttPublisher.cs` | 15 |
-| `SerializeFallback` | Method | `src/Samqtt.HomeAssistant/HomeAssistantSensorValueFormatter.cs` | 74 |
+| `SerializeFallback` | Method | `src/Samqtt.HomeAssistant/HomeAssistantSensorValueFormatter.cs` | 89 |
 
 ## Execution Flows
 
