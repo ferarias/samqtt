@@ -53,11 +53,12 @@ else
   exit 1
 fi
 
-# Extract the tar.gz file
+# Extract the tar.gz file and detect the extracted directory
+EXTRACT_DIR=$(tar tzf "$FILE_NAME" | head -1 | cut -f1 -d"/")
 tar xvfz "$FILE_NAME"
 
 # Move into the extracted directory and run INSTALL_SCRIPT
-cd samqtt
+cd "$EXTRACT_DIR"
 chmod +x "$INSTALL_SCRIPT"
 chmod +x "$UNINSTALL_SCRIPT"
 ./"$INSTALL_SCRIPT"

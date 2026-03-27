@@ -1,16 +1,27 @@
 # SAMQTT - Linux Install Instructions
 
-## **Download and extract** the release:
+## Quick install (latest release)
 
 ```bash
-wget https://github.com/ferarias/samqtt/releases/download/v0.0.3-beta03/samqtt-ubuntu-latest.tar.gz
-tar -xzfv samqtt-ubuntu-latest.tar.gz
+wget https://raw.githubusercontent.com/ferarias/samqtt/master/setup/install-latest-linux.sh
+chmod +x install-latest-linux.sh
+./install-latest-linux.sh
 ```
-## Run the installer
+
+## Manual install
+
+**Download and extract** the release (replace `<version>` with the desired release tag):
+
+```bash
+wget https://github.com/ferarias/samqtt/releases/download/<version>/samqtt-linux-x64.tar.gz
+tar -xzf samqtt-linux-x64.tar.gz
+```
+
+**Run the installer:**
 
 ```bash
 cd samqtt
-chmod +x uninstall.sh
+chmod +x install.sh uninstall.sh
 ./install.sh
 ```
 
@@ -18,6 +29,5 @@ chmod +x uninstall.sh
 
 ```bash
 cd samqtt
-chmod +x uninstall.sh
 ./uninstall.sh
 ```

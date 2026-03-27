@@ -5,7 +5,7 @@ After=network.target
 [Service]
 Type=simple
 WorkingDirectory=/opt/samqtt
-ExecStart=/opt/samqtt/samqtt
+ExecStart=/opt/samqtt/Samqtt
 Restart=on-failure
 RestartSec=5
 User=samqtt

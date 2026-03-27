@@ -35,7 +35,7 @@ DEVICE_IDENTIFIER=${DEVICE_IDENTIFIER:-$DEFAULT_IDENTIFIER}
 
 # Create target install dir
 sudo mkdir -p "$INSTALL_DIR"
-sudo cp -r ./* "$INSTALL_DIR"
+sudo cp Samqtt appsettings.json appsettings.Development.json "$INSTALL_DIR/"
 
 # Create systemd service
 sudo cp "$SERVICE_FILE" "/etc/systemd/system/$SERVICE_FILE"
@@ -67,7 +67,6 @@ sudo chown -R "$USER_NAME:$USER_NAME" "$INSTALL_DIR"
 sudo chown -R "$USER_NAME:$USER_NAME" "$CONFIG_DIR"
 
 # Reload and start service
-sudo systemctl daemon-reexec
 sudo systemctl daemon-reload
 sudo systemctl enable "$SERVICE_NAME"
 sudo systemctl restart "$SERVICE_NAME"
