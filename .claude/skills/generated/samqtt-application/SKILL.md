@@ -63,10 +63,10 @@ Start here when exploring this area:
 | Flow | Type | Steps |
 |------|------|-------|
 | `GetEnabledSensors → SanitizationRegex` | cross_community | 5 |
+| `GetEnabledSensors → GetSensorAttributes` | cross_community | 5 |
 | `GetEnabledSensors → SystemSensorMetadata` | cross_community | 5 |
 | `GetEnabledSensors → GetUniqueId` | cross_community | 5 |
 | `GetEnabledSensors → GetSensorStateTopic` | cross_community | 5 |
-| `GetEnabledSensors → GetStandardSensorDiscoveryTopic` | cross_community | 5 |
 | `GetUniqueId → SanitizationRegex` | intra_community | 3 |
 | `GetSensorStateTopic → SanitizationRegex` | intra_community | 3 |
 | `GetActionStateTopic → SanitizationRegex` | intra_community | 3 |

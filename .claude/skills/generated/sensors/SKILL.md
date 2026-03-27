@@ -50,9 +50,9 @@ Start here when exploring this area:
 | `DrivePercentFreeSizeSensor` | Class | `src/Samqtt.SystemSensors/MultiSensors/Drive/DrivePercentFreeSizeSensor.cs` | 4 |
 | `DriveFreeSizeSensor` | Class | `src/Samqtt.SystemSensors/MultiSensors/Drive/DriveFreeSizeSensor.cs` | 4 |
 | `ISystemSensor` | Interface | `src/Samqtt.Common/SystemSensors/ISystemSensor.cs` | 4 |
-| `CollectInternalAsync` | Method | `src/Samqtt.SystemSensors.Windows/Sensors/FreeMemorySensor.cs` | 8 |
-| `GetFreeMemoryAsync` | Method | `src/Samqtt.SystemSensors.Windows/Sensors/FreeMemorySensor.cs` | 16 |
-| `GlobalMemoryStatusEx` | Method | `src/Samqtt.SystemSensors.Windows/Sensors/FreeMemorySensor.cs` | 43 |
+| `CollectInternalAsync` | Method | `src/Samqtt.SystemSensors.Windows/Sensors/FreeMemorySensor.cs` | 16 |
+| `GetFreeMemoryAsync` | Method | `src/Samqtt.SystemSensors.Windows/Sensors/FreeMemorySensor.cs` | 24 |
+| `GlobalMemoryStatusEx` | Method | `src/Samqtt.SystemSensors.Windows/Sensors/FreeMemorySensor.cs` | 51 |
 
 ## Execution Flows
 

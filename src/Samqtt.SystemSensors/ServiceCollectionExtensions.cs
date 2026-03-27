@@ -16,7 +16,8 @@ namespace Samqtt.SystemSensors
     /// </summary>
     public static class ServiceCollectionExtensions
     {
-        public static IServiceCollection AddSystemSensors(this IServiceCollection services) =>
+        public static IServiceCollection AddSystemSensors(this IServiceCollection services)
+        {
             services
                 // Simple sensors
                 .AddSystemSensor<Sensors.TimestampSensor>()
@@ -27,5 +28,15 @@ namespace Samqtt.SystemSensors
                     typeof(DriveFreeSizeSensor),
                     typeof(DriveTotalSizeSensor),
                     typeof(DrivePercentFreeSizeSensor));
+
+            // Linux-only sensors
+            if (OperatingSystem.IsLinux())
+            {
+                services.AddSystemSensor<Sensors.CpuProcessorTimeSensor>();
+                services.AddSystemSensor<Sensors.FreeMemorySensor>();
+            }
+
+            return services;
+        }
     }
 }

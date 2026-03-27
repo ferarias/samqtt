@@ -14,13 +14,15 @@ A subtopic with each drive letter, each having the following subtopics:
 
 Example : `samqtt/lechuck/drive/c/sizetotal` → `13455527`
 
-### Memory sensors
+### FreeMemory sensor
 
-Returns available memory in Megabytes
+Available physical memory in bytes, read from `/proc/meminfo` (`MemAvailable`) on Linux and `GlobalMemoryStatusEx` on Windows.
 
-`samqtt/{hostname}/freememory `
+`samqtt/{hostname}/sensor/freememory`
 
-Example : `samqtt/lechuck/freememory` → `234`
+Example: `samqtt/lechuck/sensor/freememory` → `4294967296`
+
+**Platforms:** Linux, Windows
 
 ### Network sensors
 
@@ -36,8 +38,12 @@ Example : `samqtt/lechuck/binary_sensor/network_available` → `1`
 
 Example : `samqtt/lechuck/binary_sensor/inuse` → `on`
 
-### Cpu sensors
+### CpuProcessorTime sensor
 
-`samqtt/{hostname}/cpuprocessortime` (returns string 0-100%)
+CPU usage as a percentage (0–100), calculated from `/proc/stat` deltas between polls.
 
-Example : `samqtt/lechuck/cpuprocessortime` →  `50`
+`samqtt/{hostname}/sensor/cpuprocessortime`
+
+Example: `samqtt/lechuck/sensor/cpuprocessortime` → `42.5`
+
+**Platforms:** Linux, Windows
