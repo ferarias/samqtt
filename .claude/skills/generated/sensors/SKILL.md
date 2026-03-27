@@ -1,11 +1,11 @@
 ---
 name: sensors
-description: "Skill for the Sensors area of samqtt. 12 symbols across 9 files."
+description: "Skill for the Sensors area of samqtt. 21 symbols across 11 files."
 ---
 
 # Sensors
 
-12 symbols | 9 files | Cohesion: 100%
+21 symbols | 11 files | Cohesion: 100%
 
 ## When to Use
 
@@ -18,14 +18,15 @@ description: "Skill for the Sensors area of samqtt. 12 symbols across 9 files."
 | File | Symbols |
 |------|---------|
 | `src/Samqtt.SystemSensors.Windows/Sensors/FreeMemorySensor.cs` | FreeMemorySensor, CollectInternalAsync, GetFreeMemoryAsync, GlobalMemoryStatusEx |
-| `src/Samqtt.SystemSensors.Windows/Sensors/CpuProcessorTimeSensor.cs` | CpuProcessorTimeSensor |
+| `src/Samqtt.SystemSensors.Windows/Sensors/CpuProcessorTimeSensor.cs` | CpuProcessorTimeSensor, CollectInternalAsync, GetSystemTimes, ToLong |
+| `src/Samqtt.SystemSensors/Sensors/FreeMemorySensor.cs` | FreeMemorySensor, CollectInternalAsync, ReadMemAvailableBytesAsync |
+| `src/Samqtt.SystemSensors/Sensors/CpuProcessorTimeSensor.cs` | CpuProcessorTimeSensor, CollectInternalAsync, ReadCpuTimesAsync |
 | `src/Samqtt.SystemSensors/Sensors/TimestampSensor.cs` | TimestampSensor |
 | `src/Samqtt.SystemSensors/Sensors/NetworkAvailabilitySensor.cs` | NetworkAvailabilitySensor |
 | `src/Samqtt.Common/SystemSensors/SystemSensor.cs` | SystemSensor |
 | `src/Samqtt.Common/SystemSensors/ISystemSensor.cs` | ISystemSensor |
 | `src/Samqtt.SystemSensors/MultiSensors/Drive/DriveTotalSizeSensor.cs` | DriveTotalSizeSensor |
 | `src/Samqtt.SystemSensors/MultiSensors/Drive/DrivePercentFreeSizeSensor.cs` | DrivePercentFreeSizeSensor |
-| `src/Samqtt.SystemSensors/MultiSensors/Drive/DriveFreeSizeSensor.cs` | DriveFreeSizeSensor |
 
 ## Entry Points
 
@@ -35,7 +36,7 @@ Start here when exploring this area:
 - **`CpuProcessorTimeSensor`** (Class) — `src/Samqtt.SystemSensors.Windows/Sensors/CpuProcessorTimeSensor.cs:5`
 - **`TimestampSensor`** (Class) — `src/Samqtt.SystemSensors/Sensors/TimestampSensor.cs:4`
 - **`NetworkAvailabilitySensor`** (Class) — `src/Samqtt.SystemSensors/Sensors/NetworkAvailabilitySensor.cs:5`
-- **`SystemSensor`** (Class) — `src/Samqtt.Common/SystemSensors/SystemSensor.cs:4`
+- **`FreeMemorySensor`** (Class) — `src/Samqtt.SystemSensors/Sensors/FreeMemorySensor.cs:4`
 
 ## Key Symbols
 
@@ -45,14 +46,22 @@ Start here when exploring this area:
 | `CpuProcessorTimeSensor` | Class | `src/Samqtt.SystemSensors.Windows/Sensors/CpuProcessorTimeSensor.cs` | 5 |
 | `TimestampSensor` | Class | `src/Samqtt.SystemSensors/Sensors/TimestampSensor.cs` | 4 |
 | `NetworkAvailabilitySensor` | Class | `src/Samqtt.SystemSensors/Sensors/NetworkAvailabilitySensor.cs` | 5 |
+| `FreeMemorySensor` | Class | `src/Samqtt.SystemSensors/Sensors/FreeMemorySensor.cs` | 4 |
+| `CpuProcessorTimeSensor` | Class | `src/Samqtt.SystemSensors/Sensors/CpuProcessorTimeSensor.cs` | 4 |
 | `SystemSensor` | Class | `src/Samqtt.Common/SystemSensors/SystemSensor.cs` | 4 |
 | `DriveTotalSizeSensor` | Class | `src/Samqtt.SystemSensors/MultiSensors/Drive/DriveTotalSizeSensor.cs` | 4 |
 | `DrivePercentFreeSizeSensor` | Class | `src/Samqtt.SystemSensors/MultiSensors/Drive/DrivePercentFreeSizeSensor.cs` | 4 |
 | `DriveFreeSizeSensor` | Class | `src/Samqtt.SystemSensors/MultiSensors/Drive/DriveFreeSizeSensor.cs` | 4 |
 | `ISystemSensor` | Interface | `src/Samqtt.Common/SystemSensors/ISystemSensor.cs` | 4 |
+| `ToLong` | Method | `src/Samqtt.SystemSensors.Windows/Sensors/CpuProcessorTimeSensor.cs` | 67 |
 | `CollectInternalAsync` | Method | `src/Samqtt.SystemSensors.Windows/Sensors/FreeMemorySensor.cs` | 16 |
 | `GetFreeMemoryAsync` | Method | `src/Samqtt.SystemSensors.Windows/Sensors/FreeMemorySensor.cs` | 24 |
 | `GlobalMemoryStatusEx` | Method | `src/Samqtt.SystemSensors.Windows/Sensors/FreeMemorySensor.cs` | 51 |
+| `CollectInternalAsync` | Method | `src/Samqtt.SystemSensors.Windows/Sensors/CpuProcessorTimeSensor.cs` | 20 |
+| `GetSystemTimes` | Method | `src/Samqtt.SystemSensors.Windows/Sensors/CpuProcessorTimeSensor.cs` | 56 |
+| `CollectInternalAsync` | Method | `src/Samqtt.SystemSensors/Sensors/FreeMemorySensor.cs` | 15 |
+| `ReadMemAvailableBytesAsync` | Method | `src/Samqtt.SystemSensors/Sensors/FreeMemorySensor.cs` | 22 |
+| `CollectInternalAsync` | Method | `src/Samqtt.SystemSensors/Sensors/CpuProcessorTimeSensor.cs` | 18 |
 
 ## Execution Flows
 

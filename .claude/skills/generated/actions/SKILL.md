@@ -1,11 +1,11 @@
 ---
 name: actions
-description: "Skill for the Actions area of samqtt. 10 symbols across 10 files."
+description: "Skill for the Actions area of samqtt. 15 symbols across 15 files."
 ---
 
 # Actions
 
-10 symbols | 10 files | Cohesion: 100%
+15 symbols | 15 files | Cohesion: 100%
 
 ## When to Use
 
@@ -21,12 +21,12 @@ description: "Skill for the Actions area of samqtt. 10 symbols across 10 files."
 | `src/Samqtt.SystemActions.Windows/Actions/ShutdownAction.cs` | ShutdownAction |
 | `src/Samqtt.SystemActions.Windows/Actions/RebootAction.cs` | RebootAction |
 | `src/Samqtt.SystemActions.Windows/Actions/HibernateAction.cs` | HibernateAction |
+| `src/Samqtt.SystemActions/Actions/SuspendAction.cs` | SuspendAction |
 | `src/Samqtt.SystemActions/Actions/StartProcessAction.cs` | StartProcessAction |
+| `src/Samqtt.SystemActions/Actions/ShutdownAction.cs` | ShutdownAction |
+| `src/Samqtt.SystemActions/Actions/SendNotificationAction.cs` | SendNotificationAction |
+| `src/Samqtt.SystemActions/Actions/RebootAction.cs` | RebootAction |
 | `src/Samqtt.SystemActions/Actions/KillProcessAction.cs` | KillProcessAction |
-| `src/Samqtt.SystemActions/Actions/GetProcessesAction.cs` | GetProcessesAction |
-| `src/Samqtt.SystemActions/Actions/GetProcessAction.cs` | GetProcessAction |
-| `src/Samqtt.Common/SystemActions/SystemAction.cs` | SystemAction |
-| `src/Samqtt.Common/SystemActions/ISystemAction.cs` | ISystemAction |
 
 ## Entry Points
 
@@ -36,7 +36,7 @@ Start here when exploring this area:
 - **`ShutdownAction`** (Class) — `src/Samqtt.SystemActions.Windows/Actions/ShutdownAction.cs:2`
 - **`RebootAction`** (Class) — `src/Samqtt.SystemActions.Windows/Actions/RebootAction.cs:2`
 - **`HibernateAction`** (Class) — `src/Samqtt.SystemActions.Windows/Actions/HibernateAction.cs:2`
-- **`StartProcessAction`** (Class) — `src/Samqtt.SystemActions/Actions/StartProcessAction.cs:5`
+- **`SuspendAction`** (Class) — `src/Samqtt.SystemActions/Actions/SuspendAction.cs:4`
 
 ## Key Symbols
 
@@ -46,8 +46,13 @@ Start here when exploring this area:
 | `ShutdownAction` | Class | `src/Samqtt.SystemActions.Windows/Actions/ShutdownAction.cs` | 2 |
 | `RebootAction` | Class | `src/Samqtt.SystemActions.Windows/Actions/RebootAction.cs` | 2 |
 | `HibernateAction` | Class | `src/Samqtt.SystemActions.Windows/Actions/HibernateAction.cs` | 2 |
+| `SuspendAction` | Class | `src/Samqtt.SystemActions/Actions/SuspendAction.cs` | 4 |
 | `StartProcessAction` | Class | `src/Samqtt.SystemActions/Actions/StartProcessAction.cs` | 5 |
+| `ShutdownAction` | Class | `src/Samqtt.SystemActions/Actions/ShutdownAction.cs` | 4 |
+| `SendNotificationAction` | Class | `src/Samqtt.SystemActions/Actions/SendNotificationAction.cs` | 5 |
+| `RebootAction` | Class | `src/Samqtt.SystemActions/Actions/RebootAction.cs` | 4 |
 | `KillProcessAction` | Class | `src/Samqtt.SystemActions/Actions/KillProcessAction.cs` | 4 |
+| `HibernateAction` | Class | `src/Samqtt.SystemActions/Actions/HibernateAction.cs` | 4 |
 | `GetProcessesAction` | Class | `src/Samqtt.SystemActions/Actions/GetProcessesAction.cs` | 4 |
 | `GetProcessAction` | Class | `src/Samqtt.SystemActions/Actions/GetProcessAction.cs` | 4 |
 | `SystemAction` | Class | `src/Samqtt.Common/SystemActions/SystemAction.cs` | 5 |

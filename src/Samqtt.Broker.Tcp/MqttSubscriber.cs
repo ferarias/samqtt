@@ -45,9 +45,7 @@ internal class MqttSubscriber : IMqttSubscriber
 
                 if (result is IEnumerable<object> enumerable)
                 {
-#pragma warning disable IL2026, IL3050
-                    var items = enumerable.Select(item => sensorValueFormatter.Format(item)).ToList();
-#pragma warning restore IL2026, IL3050
+                    var items = enumerable.Select(item => sensorValueFormatter.FormatObject(item)).ToList();
                     var count = items.Count;
                     await publisher.PublishActionStateValue(stateTopic, $"Returned {count} items", stoppingToken);
                     var resultPayload = new ActionResultPayload(count, items);
@@ -58,9 +56,7 @@ internal class MqttSubscriber : IMqttSubscriber
                 }
                 else
                 {
-#pragma warning disable IL2026, IL3050
-                    var v = sensorValueFormatter.Format(result);
-#pragma warning restore IL2026, IL3050
+                    var v = sensorValueFormatter.FormatObject(result);
                     await publisher.PublishActionStateValue(stateTopic, v, stoppingToken);
                     await publisher.PublishActionStateValue(jsonAttrTopic, v, stoppingToken);
                 }

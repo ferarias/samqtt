@@ -1,7 +1,7 @@
 <!-- gitnexus:start -->
 # GitNexus — Code Intelligence
 
-This project is indexed by GitNexus as **samqtt** (689 symbols, 1548 relationships, 37 execution flows). Use the GitNexus MCP tools to understand code, assess impact, and navigate safely.
+This project is indexed by GitNexus as **samqtt** (684 symbols, 1625 relationships, 37 execution flows). Use the GitNexus MCP tools to understand code, assess impact, and navigate safely.
 
 > If any GitNexus tool warns the index is stale, run `npx gitnexus analyze` in terminal first.
 
@@ -97,13 +97,13 @@ To check whether embeddings exist, inspect `.gitnexus/meta.json` — the `stats.
 | Rename / extract / split / refactor | `.claude/skills/gitnexus/gitnexus-refactoring/SKILL.md` |
 | Tools, resources, schema reference | `.claude/skills/gitnexus/gitnexus-guide/SKILL.md` |
 | Index, status, clean, wiki CLI commands | `.claude/skills/gitnexus/gitnexus-cli/SKILL.md` |
-| Work in the Samqtt.Common area (34 symbols) | `.claude/skills/generated/samqtt-common/SKILL.md` |
+| Work in the Samqtt.Common area (33 symbols) | `.claude/skills/generated/samqtt-common/SKILL.md` |
 | Work in the Samqtt.Broker.Tcp area (27 symbols) | `.claude/skills/generated/samqtt-broker-tcp/SKILL.md` |
+| Work in the Sensors area (21 symbols) | `.claude/skills/generated/sensors/SKILL.md` |
 | Work in the Samqtt.Application area (19 symbols) | `.claude/skills/generated/samqtt-application/SKILL.md` |
+| Work in the Actions area (15 symbols) | `.claude/skills/generated/actions/SKILL.md` |
 | Work in the Samqtt.HomeAssistant area (14 symbols) | `.claude/skills/generated/samqtt-homeassistant/SKILL.md` |
-| Work in the Sensors area (12 symbols) | `.claude/skills/generated/sensors/SKILL.md` |
-| Work in the Actions area (10 symbols) | `.claude/skills/generated/actions/SKILL.md` |
 | Work in the Samqtt.SystemActions.Windows area (9 symbols) | `.claude/skills/generated/samqtt-systemactions-windows/SKILL.md` |
-| Work in the SystemSensors area (5 symbols) | `.claude/skills/generated/systemsensors/SKILL.md` |
+| Work in the SystemSensors area (9 symbols) | `.claude/skills/generated/systemsensors/SKILL.md` |
 
 <!-- gitnexus:end -->

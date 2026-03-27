@@ -26,35 +26,35 @@ description: "Skill for the Samqtt.Broker.Tcp area of samqtt. 27 symbols across 
 
 Start here when exploring this area:
 
-- **`PublishAsync`** (Method) — `src/Samqtt.Broker.Tcp/MqttTcpClient.cs:54`
-- **`SubscribeAsync`** (Method) — `src/Samqtt.Broker.Tcp/MqttTcpClient.cs:83`
-- **`UnsubscribeAsync`** (Method) — `src/Samqtt.Broker.Tcp/MqttTcpClient.cs:99`
-- **`DisconnectAsync`** (Method) — `src/Samqtt.Broker.Tcp/MqttTcpClient.cs:105`
-- **`DisposeAsync`** (Method) — `src/Samqtt.Broker.Tcp/MqttTcpClient.cs:385`
+- **`PublishAsync`** (Method) — `src/Samqtt.Broker.Tcp/MqttTcpClient.cs:62`
+- **`SubscribeAsync`** (Method) — `src/Samqtt.Broker.Tcp/MqttTcpClient.cs:91`
+- **`UnsubscribeAsync`** (Method) — `src/Samqtt.Broker.Tcp/MqttTcpClient.cs:107`
+- **`DisconnectAsync`** (Method) — `src/Samqtt.Broker.Tcp/MqttTcpClient.cs:113`
+- **`DisposeAsync`** (Method) — `src/Samqtt.Broker.Tcp/MqttTcpClient.cs:400`
 
 ## Key Symbols
 
 | Symbol | Type | File | Line |
 |--------|------|------|------|
-| `PublishAsync` | Method | `src/Samqtt.Broker.Tcp/MqttTcpClient.cs` | 54 |
-| `SubscribeAsync` | Method | `src/Samqtt.Broker.Tcp/MqttTcpClient.cs` | 83 |
-| `UnsubscribeAsync` | Method | `src/Samqtt.Broker.Tcp/MqttTcpClient.cs` | 99 |
-| `DisconnectAsync` | Method | `src/Samqtt.Broker.Tcp/MqttTcpClient.cs` | 105 |
-| `DisposeAsync` | Method | `src/Samqtt.Broker.Tcp/MqttTcpClient.cs` | 385 |
-| `SubscribeAsync` | Method | `src/Samqtt.Broker.Tcp/MqttSubscriber.cs` | 74 |
+| `PublishAsync` | Method | `src/Samqtt.Broker.Tcp/MqttTcpClient.cs` | 62 |
+| `SubscribeAsync` | Method | `src/Samqtt.Broker.Tcp/MqttTcpClient.cs` | 91 |
+| `UnsubscribeAsync` | Method | `src/Samqtt.Broker.Tcp/MqttTcpClient.cs` | 107 |
+| `DisconnectAsync` | Method | `src/Samqtt.Broker.Tcp/MqttTcpClient.cs` | 113 |
+| `DisposeAsync` | Method | `src/Samqtt.Broker.Tcp/MqttTcpClient.cs` | 400 |
+| `SubscribeAsync` | Method | `src/Samqtt.Broker.Tcp/MqttSubscriber.cs` | 70 |
 | `PublishAsync` | Method | `src/Samqtt.Broker.Tcp/MqttPublisher.cs` | 8 |
 | `DisconnectAsync` | Method | `src/Samqtt.Broker.Tcp/MqttConnector.cs` | 52 |
 | `DisposeAsync` | Method | `src/Samqtt.Broker.Tcp/MqttConnector.cs` | 64 |
-| `ConnectAsync` | Method | `src/Samqtt.Broker.Tcp/MqttTcpClient.cs` | 23 |
+| `ConnectAsync` | Method | `src/Samqtt.Broker.Tcp/MqttTcpClient.cs` | 24 |
 | `ConnectAsync` | Method | `src/Samqtt.Broker.Tcp/MqttConnector.cs` | 17 |
-| `SendConnectAsync` | Method | `src/Samqtt.Broker.Tcp/MqttTcpClient.cs` | 207 |
-| `WritePacketAsync` | Method | `src/Samqtt.Broker.Tcp/MqttTcpClient.cs` | 288 |
-| `BuildPublish` | Method | `src/Samqtt.Broker.Tcp/MqttTcpClient.cs` | 302 |
-| `BuildSubscribe` | Method | `src/Samqtt.Broker.Tcp/MqttTcpClient.cs` | 322 |
-| `BuildUnsubscribe` | Method | `src/Samqtt.Broker.Tcp/MqttTcpClient.cs` | 339 |
-| `WriteString` | Method | `src/Samqtt.Broker.Tcp/MqttTcpClient.cs` | 355 |
-| `WriteVarint` | Method | `src/Samqtt.Broker.Tcp/MqttTcpClient.cs` | 363 |
-| `NextPacketId` | Method | `src/Samqtt.Broker.Tcp/MqttTcpClient.cs` | 377 |
+| `SendConnectAsync` | Method | `src/Samqtt.Broker.Tcp/MqttTcpClient.cs` | 222 |
+| `WritePacketAsync` | Method | `src/Samqtt.Broker.Tcp/MqttTcpClient.cs` | 303 |
+| `BuildPublish` | Method | `src/Samqtt.Broker.Tcp/MqttTcpClient.cs` | 317 |
+| `BuildSubscribe` | Method | `src/Samqtt.Broker.Tcp/MqttTcpClient.cs` | 337 |
+| `BuildUnsubscribe` | Method | `src/Samqtt.Broker.Tcp/MqttTcpClient.cs` | 354 |
+| `WriteString` | Method | `src/Samqtt.Broker.Tcp/MqttTcpClient.cs` | 370 |
+| `WriteVarint` | Method | `src/Samqtt.Broker.Tcp/MqttTcpClient.cs` | 378 |
+| `NextPacketId` | Method | `src/Samqtt.Broker.Tcp/MqttTcpClient.cs` | 392 |
 | `DisposeAsyncCore` | Method | `src/Samqtt.Broker.Tcp/MqttConnector.cs` | 70 |
 
 ## Execution Flows

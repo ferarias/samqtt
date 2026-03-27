@@ -1,23 +1,23 @@
-﻿using System.Diagnostics.CodeAnalysis;
+﻿using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using Microsoft.Extensions.DependencyInjection;
-using System;
-using System.Collections.Generic;
 
 namespace Samqtt.Options
 {
     public static class ServiceCollectionExtensions
     {
+        // DynamicDependency preserves all members (including data-annotation attributes) on the
+        // options types so ValidateDataAnnotations can inspect them at runtime after trimming.
+        [DynamicDependency(DynamicallyAccessedMemberTypes.All, typeof(SamqttOptions))]
+        [DynamicDependency(DynamicallyAccessedMemberTypes.All, typeof(MqttBrokerOptions))]
+        [UnconditionalSuppressMessage("Trimming", "IL2026",
+            Justification = "DynamicDependency ensures SamqttOptions and MqttBrokerOptions members including data-annotation attributes are preserved.")]
         public static IServiceCollection AddSamqttOptions(this IServiceCollection services)
         {
-            // ValidateDataAnnotations uses reflection to check [Required] attributes.
-            // SamqttOptions and nested types are simple POCOs with no dynamic members —
-            // trimming will not remove any properties actually inspected at runtime.
-#pragma warning disable IL2026
             services
             .AddOptionsWithValidateOnStart<SamqttOptions>()
                 .BindConfiguration(SamqttOptions.SectionName)
                 .ValidateDataAnnotations();
-#pragma warning restore IL2026
 
             services
                 .PostConfigure<SamqttOptions>(o =>
