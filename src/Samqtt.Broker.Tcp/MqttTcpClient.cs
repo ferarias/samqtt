@@ -1,4 +1,5 @@
 using System.Collections.Concurrent;
+using System.Net;
 using System.Net.Sockets;
 using System.Text;
 using Microsoft.Extensions.Logging;
@@ -39,8 +40,15 @@ internal sealed class MqttTcpClient(ILogger<MqttTcpClient> logger) : IAsyncDispo
         _stream?.Dispose();
         _tcpClient?.Dispose();
 
-        _tcpClient = new TcpClient();
-        await _tcpClient.ConnectAsync(host, port ?? 1883, cancellationToken);
+        // Resolve hostname and prefer IPv4 to avoid connecting to the wrong endpoint
+        // when "localhost" resolves to both ::1 (IPv6) and 127.0.0.1 (IPv4) on Windows.
+        var addresses = await Dns.GetHostAddressesAsync(host, cancellationToken);
+        var address = addresses
+            .OrderByDescending(a => a.AddressFamily == AddressFamily.InterNetwork)
+            .First();
+        logger.LogDebug("Resolved {Host} to {Address} ({AddressFamily})", host, address, address.AddressFamily);
+        _tcpClient = new TcpClient(address.AddressFamily);
+        await _tcpClient.ConnectAsync(address, port ?? 1883, cancellationToken);
         _stream = _tcpClient.GetStream();
 
         await SendConnectAsync(clientId, credentials, will, keepaliveSecs, cancellationToken);
@@ -106,6 +114,13 @@ internal sealed class MqttTcpClient(ILogger<MqttTcpClient> logger) : IAsyncDispo
     public async Task DisconnectAsync(CancellationToken cancellationToken = default)
     {
         _isConnected = false;
+
+        // Unblock any QoS-1 publish/subscribe callers waiting for an ack so they don't
+        // sit for up to 30 seconds after the connection is gone.
+        foreach (var tcs in _pendingAcks.Values)
+            tcs.TrySetCanceled(CancellationToken.None);
+        _pendingAcks.Clear();
+
         try
         {
             await WritePacketAsync([0xE0, 0x00], cancellationToken);

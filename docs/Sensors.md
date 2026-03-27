@@ -46,4 +46,4 @@ CPU usage as a percentage (0–100), calculated from `/proc/stat` deltas between
 
 Example: `samqtt/lechuck/sensor/cpuprocessortime` → `42.5`
 
-**Platforms:** Linux
+**Platforms:** Linux, Windows

@@ -18,16 +18,17 @@ namespace Samqtt.Application
         ILogger<SamqttBackgroundService> logger) : BackgroundService
     {
         private readonly static SemaphoreSlim _semaphore = new(1, 1);
-        private readonly IEnumerable<ISystemSensor> _activeSensors = sensorFactory.GetEnabledSensors();
-        private readonly IEnumerable<ISystemAction> _activeActions = actionFactory.GetEnabledActions();
+        private IEnumerable<ISystemSensor> _activeSensors = [];
+        private IEnumerable<ISystemAction> _activeActions = [];
 
 
         public override async Task StartAsync(CancellationToken stoppingToken)
         {
-            // Connect to MQTT broker, Subscribe to incoming messages and Publish Home Assistant discovery messages/online status
-            // Connect to MQTT broker
+            // Connect to MQTT broker first, then load sensors and actions
             await connectionManager.ConnectAsync(stoppingToken);
 
+            _activeSensors = sensorFactory.GetEnabledSensors();
+            _activeActions = actionFactory.GetEnabledActions();
 
             // Publish Home Assistant sensor discovery messages
             foreach (var sensor in _activeSensors)
@@ -64,6 +65,7 @@ namespace Samqtt.Application
                     {
                         foreach (var sensor in _activeSensors)
                         {
+                            stoppingToken.ThrowIfCancellationRequested();
                             try
                             {
                                 var collectedValue = await sensor.CollectAsync();
@@ -73,7 +75,7 @@ namespace Samqtt.Application
                                 await publisher.PublishSensorValue(sensor.Metadata.StateTopic, sensorValueFormatter.Format(collectedValue), stoppingToken);
 #pragma warning restore IL2026, IL3050
                             }
-                            catch (Exception ex)
+                            catch (Exception ex) when (ex is not OperationCanceledException)
                             {
                                 logger.LogWarning(ex, "Failed to collect from sensor {Sensor}", sensor.Metadata.Name);
                             }
@@ -109,12 +111,11 @@ namespace Samqtt.Application
 
         public override async Task StopAsync(CancellationToken cancellationToken)
         {
-            // Disonnect from MQTT broker
-            await publisher.PublishOfflineStatus(cancellationToken);
-
-            // Publish offline status
-            await connectionManager.DisconnectAsync(cancellationToken);
+            // Stop ExecuteAsync first so sensor collection is not racing with MQTT cleanup.
             await base.StopAsync(cancellationToken);
+
+            await publisher.PublishOfflineStatus(cancellationToken);
+            await connectionManager.DisconnectAsync(cancellationToken);
             logger.LogInformation("Worker stopped.");
         }
     }
