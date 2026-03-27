@@ -19,15 +19,14 @@ namespace Samqtt.SystemSensors
         public static IServiceCollection AddSystemSensors(this IServiceCollection services)
         {
             services
-                // Simple sensors
                 .AddSystemSensor<Sensors.TimestampSensor>()
-                .AddSystemSensor<Sensors.NetworkAvailabilitySensor>()
-                // Multi-sensors (registers parent + keyed child instances per drive/mount).
-                // Child types must be listed explicitly — no reflection-based discovery.
-                .AddSystemMultiSensor<DriveMultiSensor>(
-                    typeof(DriveFreeSizeSensor),
-                    typeof(DriveTotalSizeSensor),
-                    typeof(DrivePercentFreeSizeSensor));
+                .AddSystemSensor<Sensors.NetworkAvailabilitySensor>();
+
+            services.AddSystemMultiSensor<DriveMultiSensor>()
+                .WithChild<DriveFreeSizeSensor>()
+                .WithChild<DriveTotalSizeSensor>()
+                .WithChild<DrivePercentFreeSizeSensor>()
+                .Build();
 
             // Linux-only sensors
             if (OperatingSystem.IsLinux())
