@@ -2,20 +2,20 @@
 
 namespace Samqtt.SystemSensors.MultiSensors.Drive
 {
-    [HomeAssistantSensor(unitOfMeasurement: "B", deviceClass: "data_size", stateClass: "measurement")]
-    public class DriveTotalSizeSensor(ILogger<DriveTotalSizeSensor> logger) : SystemSensor<long>()
+    [HomeAssistantSensor(unitOfMeasurement: "GB", deviceClass: "data_size", stateClass: "measurement")]
+    public class DriveTotalSizeSensor(ILogger<DriveTotalSizeSensor> logger) : SystemSensor<double>()
     {
         public override string ConfigKey => "DriveTotalSize";
         public override SensorAttributeInfo GetSensorAttributes() => new()
         {
-            UnitOfMeasurement = "B",
+            UnitOfMeasurement = "GB",
             DeviceClass = "data_size",
             StateClass = "measurement",
         };
 
-        protected override Task<long> CollectInternalAsync()
+        protected override Task<double> CollectInternalAsync()
         {
-            var driveName = OperatingSystem.IsWindows() 
+            var driveName = OperatingSystem.IsWindows()
                 ? $"{Metadata.InstanceId}:\\"
                 : $"{Metadata.InstanceId}";
 
@@ -26,11 +26,11 @@ namespace Samqtt.SystemSensors.MultiSensors.Drive
             if (driveInfo == null)
             {
                 logger.LogWarning("Drive {Key} not found at {Path}", Metadata.InstanceId, driveName);
-                return Task.FromResult(0L);
+                return Task.FromResult(0.0);
             }
-            
-            var value = driveInfo.TotalSize;
-            logger.LogDebug("Collect {Key}: {Value}", Metadata.Key, value);
+
+            var value = Math.Round(driveInfo.TotalSize / 1_073_741_824.0, 2);
+            logger.LogDebug("Collect {Key}: {Value} GB", Metadata.Key, value);
             return Task.FromResult(value);
         }
     }
