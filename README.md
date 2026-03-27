@@ -1,6 +1,6 @@
 # SAMQTT
 
-<img src="./docs/icon.png" width="50%">
+<img src="./docs/icon.png" width="25%">
 
 Acronym for **Sensors and Actions bridge to MQTT**, SAMQTT is a background service that exposes system sensors to MQTT so that they can be consumed from IOT applications such as Home Assistant.
 It can be run in both Windows and Linux.
@@ -27,25 +27,39 @@ In both Linux and Windows there's an installer available. Keep these values at h
 bash <(curl -s https://raw.githubusercontent.com/ferarias/samqtt/master/setup/install-latest-linux.sh)
 ```
 
+Follow setup instrucions to configure SAMQTT step by step.
+
 #### Manual install
 
-Get the latest appropriate Linux version from the [releases](https://github.com/ferarias/samqtt/releases/) section.
+Get the appropriate Linux latest version from the [releases](https://github.com/ferarias/samqtt/releases/) section.
 
 Example for Linux (X64)
 ```
 wget https://github.com/ferarias/samqtt/releases/latest/download/samqtt-linux-x64.tar.gz
 tar xvfz samqtt-linux-x64.tar.gz
-cd samqtt
+cd ./samqtt
 chmod +x install.sh
 ./install.sh
 ```
 
-You can further customize settings in `/etc/mqtt/samqtt.appsettings.json`
+Customize settings by editing `/etc/mqtt/samqtt.appsettings.json`
 
 #### Uninstall
+
+```bash
+./samqtt/uninstall.sh
 ```
-/opt/samqtt/uninstall.sh
+
+if you deleted the original folder, you can re-download and uninstall:
+
+```bash
+wget https://github.com/ferarias/samqtt/releases/latest/download/samqtt-linux-x64.tar.gz
+tar xvfz samqtt-linux-x64.tar.gz
+cd ./samqtt
+chmod +x uninstall.sh
+./uninstall.sh
 ```
+
 
 ## Architecture
 
