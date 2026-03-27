@@ -2,35 +2,35 @@
 
 namespace Samqtt.SystemSensors.MultiSensors.Drive
 {
-    [HomeAssistantSensor(unitOfMeasurement: "B", deviceClass: "data_size", stateClass: "measurement")]
-    public class DriveFreeSizeSensor(ILogger<DriveFreeSizeSensor> logger) : SystemSensor<long>()
+    [HomeAssistantSensor(unitOfMeasurement: "GB", deviceClass: "data_size", stateClass: "measurement")]
+    public class DriveFreeSizeSensor(ILogger<DriveFreeSizeSensor> logger) : SystemSensor<double>()
     {
         public override string ConfigKey => "DriveFreeSize";
         public override SensorAttributeInfo GetSensorAttributes() => new()
         {
-            UnitOfMeasurement = "B",
+            UnitOfMeasurement = "GB",
             DeviceClass = "data_size",
             StateClass = "measurement",
         };
 
-        protected override Task<long> CollectInternalAsync()
+        protected override Task<double> CollectInternalAsync()
         {
-            var driveName = OperatingSystem.IsWindows() 
+            var driveName = OperatingSystem.IsWindows()
                 ? $"{Metadata.InstanceId}:\\"
                 : $"{Metadata.InstanceId}";
 
             var driveInfo = DriveInfo.GetDrives()
                 .FirstOrDefault(di => di.Name.Equals(driveName, StringComparison.OrdinalIgnoreCase) ||
                                     di.Name.TrimEnd('/').Equals(driveName, StringComparison.OrdinalIgnoreCase));
-            
+
             if (driveInfo == null)
             {
                 logger.LogWarning("Drive {Key} not found at {Path}", Metadata.InstanceId, driveName);
-                return Task.FromResult(0L);
+                return Task.FromResult(0.0);
             }
 
-            var value = driveInfo.AvailableFreeSpace;
-            logger.LogDebug("Collect {Key}: {Value} bytes for drive {Path}", Metadata.Key, value, driveInfo.Name);
+            var value = Math.Round(driveInfo.AvailableFreeSpace / 1_073_741_824.0, 2);
+            logger.LogDebug("Collect {Key}: {Value} GB for drive {Path}", Metadata.Key, value, driveInfo.Name);
             return Task.FromResult(value);
         }
     }
