@@ -10,7 +10,7 @@ UNINSTALL_SCRIPT="uninstall.sh"
 case "$(uname -m)" in
   x86_64|amd64) ARCH="x64";;
   arm64|aarch64) ARCH="arm64";;
-  armv7l) ARCH="armv7";;
+  armv7l) ARCH="arm";;
   i386|i686) ARCH="x86";;
   *) ARCH="$(uname -m)";;
 esac
@@ -21,8 +21,7 @@ echo "Architecture: $ARCH"
 API_URL="https://api.github.com/repos/${OWNER}/${REPO}/releases/latest"
 ASSET_URL=$(curl -s "$API_URL" \
   | grep "browser_download_url" \
-  | grep -i "linux" \
-  | grep -i "$ARCH" \
+  | grep -iE "linux-${ARCH}[^a-z0-9]" \
   | cut -d '"' -f 4 \
   | head -n 1)
 
